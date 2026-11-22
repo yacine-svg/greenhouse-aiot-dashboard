@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Greenhouse AIoT Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+:root {
+  --bg: #0C1A15;
+  --surface: #10231B;
+  --card: rgba(255,255,255,0.045);
+  --card-border: rgba(255,255,255,0.10);
+  --text: #EAF2EC;
+  --text-2: #A9BEB2;
+  --text-3: #7C978A;
+  --grid: rgba(255,255,255,0.07);
+  --axis: rgba(255,255,255,0.18);
+  --brand: #4ADE80;
+  --temp: #d95926;
+  --hum: #3987e5;
+  --soil: #199e70;
+  --light: #c98500;
+  --critical: #ef6b6b;
+  --warning: #f2a93b;
+  --good: #4ADE80;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); }
+body {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(74,222,128,0.13), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 100% 10%, rgba(57,135,229,0.10), transparent 60%),
+    var(--bg);
+}
+body::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none;
+  background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.wrap { position: relative; max-width: 1440px; margin: 0 auto; padding: 24px 28px 40px; }
+
+/* ---------- header ---------- */
+header { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-bottom: 20px; }
+.logo { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center;
+  background: linear-gradient(145deg, rgba(74,222,128,0.30), rgba(74,222,128,0.06));
+  border: 1px solid rgba(74,222,128,0.45); box-shadow: 0 0 30px rgba(74,222,128,0.18); flex: none; }
+.logo svg { width: 28px; height: 28px; }
+.titles h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.4px; }
+.titles p { font-size: 13.5px; color: var(--text-2); margin-top: 3px; }
+.spacer { flex: 1; }
+.tabs { display: flex; background: rgba(0,0,0,0.25); border: 1px solid var(--card-border); border-radius: 999px; padding: 4px; }
+.tabs button { border: 0; background: transparent; color: var(--text-2); font: 600 13.5px "Inter", system-ui, sans-serif;
+  padding: 8px 18px; border-radius: 999px; cursor: pointer; transition: all .2s; }
+.tabs button.on { background: rgba(255,255,255,0.12); color: var(--text); }
+.status { display: flex; align-items: center; gap: 9px; padding: 8px 15px; border-radius: 999px;
+  background: rgba(0,0,0,0.25); border: 1px solid var(--card-border); font-size: 13px; font-weight: 600; white-space: nowrap; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 0 rgba(74,222,128,0.6); animation: pulse 1.8s infinite; }
+.dot.idle { background: var(--text-3); animation: none; }
+.dot.err { background: var(--critical); animation: none; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.55); } 70% { box-shadow: 0 0 0 10px rgba(74,222,128,0); } 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); } }
+
+/* ---------- control bar ---------- */
+.controls { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 14px 18px; margin-bottom: 18px;
+  background: var(--card); border: 1px solid var(--card-border); border-radius: 18px; backdrop-filter: blur(8px); }
+.btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(74,222,128,0.5); cursor: pointer;
+  background: linear-gradient(180deg, rgba(74,222,128,0.28), rgba(74,222,128,0.12)); color: var(--text);
+  font: 700 13.5px "Inter", system-ui, sans-serif; padding: 9px 16px; border-radius: 12px; transition: transform .1s, box-shadow .2s; }
+.btn:hover { box-shadow: 0 0 22px rgba(74,222,128,0.25); }
+.btn:active { transform: scale(0.97); }
+.btn svg { width: 16px; height: 16px; }
+.btn.ghost { border-color: var(--card-border); background: rgba(255,255,255,0.05); }
+select, input[type=text], input[type=password] { background: rgba(0,0,0,0.3); color: var(--text); border: 1px solid var(--card-border);
+  border-radius: 10px; padding: 8px 11px; font: 500 13.5px "Inter", system-ui, sans-serif; }
+input[type=text], input[type=password] { width: 170px; }
+label.lbl { font-size: 12.5px; color: var(--text-2); font-weight: 600; }
+input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); height: 4px; }
+.clock { font-variant-numeric: tabular-nums; font-size: 13px; color: var(--text-2); min-width: 190px; text-align: right; }
+.clock b { color: var(--text); font-weight: 700; }
+.hidden { display: none !important; }
+.msg { font-size: 13px; color: var(--text-2); }
+.msg.err { color: var(--critical); }
+
+/* ---------- grid ---------- */
+.grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+.card { background: var(--card); border: 1px solid var(--card-border); border-radius: 20px; padding: 18px 20px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.28); position: relative; overflow: hidden; }
+.card h3 { font-size: 13px; font-weight: 700; color: var(--text-2); letter-spacing: 0.6px; text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px; }
+.span3 { grid-column: span 3; } .span4 { grid-column: span 4; } .span5 { grid-column: span 5; }
+.span6 { grid-column: span 6; } .span7 { grid-column: span 7; } .span8 { grid-column: span 8; } .span12 { grid-column: span 12; }
+@media (max-width: 1150px) { .span3 { grid-column: span 6; } .span4, .span5, .span7, .span8 { grid-column: span 12; } }
+@media (max-width: 680px) { .wrap { padding: 16px; } .span3, .span6 { grid-column: span 12; } .clock { text-align: left; } }
+
+/* KPI cards */
+.kpi { display: flex; flex-direction: column; gap: 10px; min-height: 168px; }
+.kpi .top { display: flex; align-items: center; gap: 12px; }
+.ic { width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; flex: none; }
+.ic svg { width: 22px; height: 22px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.kpi .name { font-size: 14px; font-weight: 600; color: var(--text-2); }
+.kpi .sub { font-size: 12px; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kpi .top > div:nth-child(2) { min-width: 0; }
+.kpi .val { font-size: 40px; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; line-height: 1; }
+.kpi .val small { font-size: 17px; font-weight: 600; color: var(--text-2); margin-left: 3px; letter-spacing: 0; }
+.kpi .row { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.delta { font-size: 12.5px; font-weight: 600; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.spark { width: 120px; height: 42px; flex: none; }
+.kpi .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+.flag { white-space: nowrap; flex: none; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+.flag.crit { background: rgba(239,107,107,0.16); color: #ffb3b3; border: 1px solid rgba(239,107,107,0.5); }
+.flag.warn { background: rgba(242,169,59,0.15); color: #ffd59a; border: 1px solid rgba(242,169,59,0.5); }
+.flag.ok { background: rgba(74,222,128,0.12); color: #a9f5c4; border: 1px solid rgba(74,222,128,0.4); }
+.flag svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* forecast hero */
+.hero { display: grid; grid-template-columns: 210px 1fr; gap: 26px; align-items: center; min-height: 260px; }
+@media (max-width: 680px) { .hero { grid-template-columns: 1fr; } }
+.gauge { position: relative; width: 210px; height: 210px; }
+.gauge svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.gauge .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.gauge .big { font-size: 42px; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+.gauge .cap { font-size: 12.5px; color: var(--text-2); margin-top: 2px; }
+.eyebrow { font-size: 12.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--brand); }
+.headline { font-size: 50px; font-weight: 800; letter-spacing: -1.6px; line-height: 1.05; margin: 8px 0 10px; font-variant-numeric: tabular-nums; }
+.headline.now { color: #ffd0d0; text-shadow: 0 0 28px rgba(239,107,107,0.55); animation: glow 1.2s ease-in-out infinite alternate; }
+@keyframes glow { from { text-shadow: 0 0 10px rgba(239,107,107,0.35); } to { text-shadow: 0 0 34px rgba(239,107,107,0.8); } }
+.hero-card.now { border-color: rgba(239,107,107,0.6); box-shadow: 0 0 0 1px rgba(239,107,107,0.25), 0 0 60px rgba(239,107,107,0.18); }
+.facts { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
+.fact { background: rgba(0,0,0,0.22); border: 1px solid var(--card-border); border-radius: 12px; padding: 9px 13px; }
+.fact b { display: block; font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.fact span { font-size: 11.5px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; }
+.progress { height: 10px; border-radius: 999px; background: rgba(255,255,255,0.07); overflow: hidden; margin-top: 4px; position: relative; }
+.progress i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; transition: width .35s ease;
+  background: linear-gradient(90deg, #ef6b6b, #f2a93b 40%, #199e70 75%); }
+.plabels { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--text-3); margin-top: 6px; }
+
+/* anomaly card */
+.anom-head { display: flex; align-items: baseline; gap: 10px; margin: 10px 0 4px; }
+.anom-head .n { font-size: 46px; font-weight: 800; letter-spacing: -1px; }
+.anom-head .t { font-size: 14px; color: var(--text-2); }
+.method { font-size: 12px; color: var(--text-3); margin-bottom: 12px; }
+.events { display: flex; flex-direction: column; gap: 10px; max-height: 170px; overflow: auto; }
+.ev { display: grid; grid-template-columns: 36px 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 14px;
+  background: rgba(239,107,107,0.08); border: 1px solid rgba(239,107,107,0.30); animation: slidein .4s ease; }
+.ev .ic { width: 36px; height: 36px; border-radius: 10px; background: rgba(239,107,107,0.18); }
+.ev .ic svg { stroke: #ffb3b3; width: 19px; height: 19px; }
+.ev b { font-size: 14px; } .ev p { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+.ev .v { font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.none { font-size: 13.5px; color: var(--text-2); padding: 14px; border: 1px dashed var(--card-border); border-radius: 14px; }
+@keyframes slidein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* charts */
+.chart-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--text-2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 16px; height: 0; border-top: 2px solid; display: inline-block; }
+.sw.dash { border-top-style: dashed; }
+.sw.pt { width: 9px; height: 9px; border: 0; border-radius: 50%; }
+.chart { position: relative; width: 100%; height: 230px; }
+.chart.tall { height: 290px; }
+.chart svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.tip { position: absolute; pointer-events: none; background: rgba(8,18,14,0.95); border: 1px solid var(--card-border);
+  border-radius: 10px; padding: 8px 11px; font-size: 12.5px; white-space: nowrap; box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+  transform: translate(-50%, calc(-100% - 12px)); opacity: 0; transition: opacity .1s; z-index: 5; }
+.tip b { font-size: 15px; font-variant-numeric: tabular-nums; }
+.tip .muted { color: var(--text-3); }
+
+/* table view */
+details.table { margin-top: 18px; }
+details.table summary { cursor: pointer; font-size: 13px; color: var(--text-2); font-weight: 600; }
+.tbl { max-height: 280px; overflow: auto; margin-top: 10px; border: 1px solid var(--card-border); border-radius: 12px; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+th, td { padding: 7px 12px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.05); }
+th { position: sticky; top: 0; background: #132a20; color: var(--text-2); font-weight: 600; }
+th:first-child, td:first-child { text-align: left; }
+tr.bad td { color: #ffb3b3; }
+
+/* toasts */
+.toasts { position: fixed; right: 22px; bottom: 22px; display: flex; flex-direction: column; gap: 10px; z-index: 50; }
+.toast { display: flex; gap: 12px; align-items: center; min-width: 290px; max-width: 360px; padding: 13px 16px; border-radius: 16px;
+  background: rgba(16,30,24,0.96); border: 1px solid rgba(239,107,107,0.55); box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 30px rgba(239,107,107,0.2);
+  animation: toastin .35s cubic-bezier(.2,.9,.3,1.3); font-size: 13px; }
+.toast.water { border-color: rgba(57,135,229,0.6); box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 30px rgba(57,135,229,0.25); }
+.toast b { display: block; font-size: 14px; margin-bottom: 2px; }
+.toast .ic { width: 38px; height: 38px; border-radius: 11px; background: rgba(239,107,107,0.18); }
+.toast.water .ic { background: rgba(57,135,229,0.2); }
+.toast .ic svg { stroke: #ffb3b3; width: 20px; height: 20px; }
+.toast.water .ic svg { stroke: #9cc6ff; }
+@keyframes toastin { from { opacity: 0; transform: translateX(40px) scale(.95); } to { opacity: 1; transform: none; } }
+
+footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 12.5px; color: var(--text-3); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></div>
+  <div class="titles">
+    <h1>Greenhouse AIoT Dashboard</h1>
+    <p>ESP32 (Wokwi) → ThingSpeak → AI module · smart agriculture</p>
+  </div>
+  <div class="spacer"></div>
+  <div class="tabs" role="tablist">
+    <button id="tabReplay" class="on" role="tab">Replay</button>
+    <button id="tabLive" role="tab">Live ThingSpeak</button>
+  </div>
+  <div class="status"><span id="statusDot" class="dot idle"></span><span id="statusText">Replay · paused</span></div>
+</header>
+
+<div class="controls" id="replayBar">
+  <button class="btn" id="playBtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg><span>Play</span></button>
+  <label class="lbl" for="speed">Speed</label>
+  <select id="speed"><option value="1">1×</option><option value="3" selected>3×</option><option value="8">8×</option><option value="20">20×</option></select>
+  <input type="range" id="scrub" min="0" max="0" value="0" aria-label="Replay position">
+  <div class="clock" id="clock"></div>
+</div>
+
+<div class="controls hidden" id="liveBar">
+  <label class="lbl" for="chId">Channel ID</label>
+  <input type="text" id="chId" placeholder="e.g. 1234567" inputmode="numeric">
+  <label class="lbl" for="chKey">Read API key</label>
+  <input type="password" id="chKey" placeholder="only for private channels">
+  <button class="btn" id="connectBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg><span>Connect</span></button>
+  <span class="msg" id="liveMsg">Refreshes every 20 seconds.</span>
+  <div class="spacer"></div>
+  <div class="clock" id="liveClock"></div>
+</div>
+
+<div class="grid">
+  <!-- KPI cards -->
+  <div class="card kpi span3" id="k-temp"></div>
+  <div class="card kpi span3" id="k-hum"></div>
+  <div class="card kpi span3" id="k-soil"></div>
+  <div class="card kpi span3" id="k-light"></div>
+
+  <!-- forecast hero -->
+  <div class="card span7 hero-card" id="heroCard">
+    <div class="hero">
+      <div class="gauge">
+        <svg viewBox="0 0 120 120">
+          <defs><linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4ADE80"/><stop offset="1" stop-color="#199e70"/></linearGradient></defs>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="10"/>
+          <circle id="gaugeArc" cx="60" cy="60" r="50" fill="none" stroke="url(#gaugeGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 400" style="transition: stroke-dasharray .4s ease, stroke .3s"/>
+          <line id="gaugeTick" x1="60" y1="4" x2="60" y2="18" stroke="#ef6b6b" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <div class="center"><div class="big" id="gaugeVal">–</div><div class="cap">soil moisture</div></div>
+      </div>
+      <div>
+        <div class="eyebrow">AI watering forecast</div>
+        <div class="headline" id="headline">–</div>
+        <div id="heroFlag"></div>
+        <div class="facts" id="facts"></div>
+        <div style="margin-top:16px">
+          <div class="progress"><i id="prog"></i></div>
+          <div class="plabels"><span>30 % · water</span><span id="progLabel"></span><span>85 % · just watered</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- anomalies -->
+  <div class="card span5">
+    <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef6b6b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>Anomaly detection</h3>
+    <div class="anom-head"><span class="n" id="anomN">0</span><span class="t" id="anomT">events detected</span></div>
+    <div class="method">Rolling median of 21 readings (about 6 min) · flagged when temperature is more than 10 °C from it</div>
+    <div class="events" id="events"></div>
+  </div>
+
+  <!-- charts -->
+  <div class="card span12">
+    <div class="chart-head">
+      <h3>Soil moisture and forecast</h3>
+      <div class="legend">
+        <span><i class="sw" style="border-color:var(--soil)"></i>Soil moisture (%)</span>
+        <span><i class="sw dash" style="border-color:var(--text)"></i>AI forecast (current cycle)</span>
+        <span><i class="sw dash" style="border-color:var(--critical)"></i>Watering threshold 30 %</span>
+      </div>
+    </div>
+    <div class="chart tall" id="c-soil"></div>
+  </div>
+  <div class="card span12">
+    <div class="chart-head">
+      <h3>Temperature</h3>
+      <div class="legend">
+        <span><i class="sw" style="border-color:var(--temp)"></i>Temperature (°C)</span>
+        <span><i class="sw dash" style="border-color:var(--text-2)"></i>Local median (21 readings)</span>
+        <span><i class="sw pt" style="background:var(--critical)"></i>Anomaly</span>
+      </div>
+    </div>
+    <div class="chart" id="c-temp"></div>
+  </div>
+  <div class="card span6">
+    <div class="chart-head"><h3>Air humidity (%)</h3></div>
+    <div class="chart" id="c-hum"></div>
+  </div>
+  <div class="card span6">
+    <div class="chart-head"><h3>Light (%)</h3></div>
+    <div class="chart" id="c-light"></div>
+  </div>
+</div>
+
+<details class="table card" style="padding:14px 18px">
+  <summary>Show the data table</summary>
+  <div class="tbl" id="tbl"></div>
+</details>
+
+<footer>
+  <span>AIoT 2026/2027 · M2 SDIA · Dr KITOUNI Ilham · Mohammed Yassine Sekhri &amp; Amokrane Ahmed</span>
+  <span id="srcNote"></span>
+</footer>
+</div>
+<div class="toasts" id="toasts"></div>
+
+<script>
+/* ===== Recorded data: ThingSpeak export (feeds.csv), 1 November 2026 ===== */
+const RECORDED = [["2026-11-01T12:21:33+00:00",1,20.0,65.0,84.6,0.0],["2026-11-01T12:21:53+00:00",2,18.0,80.0,83.8,20.0],["2026-11-01T12:23:00+00:00",3,18.0,80.0,83.3,20.0],["2026-11-01T12:23:17+00:00",4,18.0,80.0,82.4,20.0],["2026-11-01T12:23:35+00:00",5,18.0,80.0,81.9,20.0],["2026-11-01T12:23:52+00:00",6,18.0,80.0,81.2,20.0],["2026-11-01T12:24:10+00:00",7,18.0,80.0,80.2,20.0],["2026-11-01T12:24:27+00:00",8,18.0,80.0,79.3,20.0],["2026-11-01T12:24:56+00:00",9,18.0,80.0,78.4,20.0],["2026-11-01T12:25:14+00:00",10,18.0,80.0,77.5,20.0],["2026-11-01T12:25:32+00:00",11,18.0,80.0,76.7,20.0],["2026-11-01T12:25:50+00:00",12,18.0,80.0,76.2,20.0],["2026-11-01T12:26:07+00:00",13,18.0,80.0,75.2,20.0],["2026-11-01T12:26:25+00:00",14,18.0,80.0,74.7,20.0],["2026-11-01T12:26:48+00:00",15,18.0,80.0,74.1,20.0],["2026-11-01T12:27:06+00:00",16,18.0,80.0,73.5,20.0],["2026-11-01T12:27:23+00:00",17,18.0,80.0,73.0,20.0],["2026-11-01T12:27:41+00:00",18,18.0,80.0,72.1,20.0],["2026-11-01T12:27:58+00:00",19,18.0,80.0,71.4,20.0],["2026-11-01T12:28:16+00:00",20,18.0,80.0,70.8,20.0],["2026-11-01T12:28:34+00:00",21,18.0,80.0,69.9,20.0],["2026-11-01T12:28:51+00:00",22,18.0,80.0,68.9,20.0],["2026-11-01T12:29:09+00:00",23,18.0,80.0,68.1,20.0],["2026-11-01T12:29:26+00:00",24,18.0,80.0,67.3,20.0],["2026-11-01T12:29:44+00:00",25,18.0,80.0,66.4,20.0],["2026-11-01T12:30:01+00:00",26,18.0,80.0,66.0,20.0],["2026-11-01T12:30:19+00:00",27,18.0,80.0,65.4,20.0],["2026-11-01T12:30:36+00:00",28,18.0,80.0,64.8,20.0],["2026-11-01T12:30:54+00:00",29,18.0,80.0,63.8,20.0],["2026-11-01T12:31:11+00:00",30,18.0,80.0,63.1,20.0],["2026-11-01T12:31:28+00:00",31,18.0,80.0,62.6,20.0],["2026-11-01T12:31:46+00:00",32,18.0,80.0,61.8,20.0],["2026-11-01T12:32:04+00:00",33,18.0,80.0,61.0,20.0],["2026-11-01T12:32:21+00:00",34,18.0,80.0,60.1,20.0],["2026-11-01T12:32:39+00:00",35,21.8,80.0,59.2,20.0],["2026-11-01T12:32:56+00:00",36,24.0,65.0,58.8,51.0],["2026-11-01T12:33:14+00:00",37,24.0,65.0,58.2,50.0],["2026-11-01T12:33:31+00:00",38,24.0,65.0,57.2,54.0],["2026-11-01T12:33:48+00:00",39,24.0,65.0,56.7,54.0],["2026-11-01T12:34:06+00:00",40,24.0,65.0,56.2,54.0],["2026-11-01T12:34:23+00:00",41,24.0,65.0,55.5,54.0],["2026-11-01T12:34:41+00:00",42,24.0,65.0,55.1,54.0],["2026-11-01T12:34:58+00:00",43,24.0,65.0,54.4,54.0],["2026-11-01T12:35:16+00:00",44,24.0,65.0,53.5,54.0],["2026-11-01T12:35:33+00:00",45,24.0,65.0,52.6,54.0],["2026-11-01T12:35:51+00:00",46,24.0,65.0,52.1,54.0],["2026-11-01T12:36:08+00:00",47,24.0,65.0,51.2,54.0],["2026-11-01T12:36:25+00:00",48,24.0,65.0,50.6,54.0],["2026-11-01T12:36:43+00:00",49,24.0,65.0,50.2,54.0],["2026-11-01T12:37:01+00:00",50,24.0,65.0,49.4,54.0],["2026-11-01T12:37:18+00:00",51,24.0,65.0,49.0,54.0],["2026-11-01T12:37:36+00:00",52,24.0,65.0,48.6,54.0],["2026-11-01T12:37:53+00:00",53,24.0,65.0,47.9,54.0],["2026-11-01T12:38:11+00:00",54,24.0,65.0,47.3,54.0],["2026-11-01T12:38:28+00:00",55,24.0,65.0,46.8,54.0],["2026-11-01T12:38:45+00:00",56,24.0,65.0,45.9,54.0],["2026-11-01T12:39:03+00:00",57,24.0,65.0,45.4,54.0],["2026-11-01T12:39:20+00:00",58,24.0,65.0,44.5,54.0],["2026-11-01T12:39:38+00:00",59,24.0,65.0,44.0,54.0],["2026-11-01T12:39:55+00:00",60,24.0,65.0,43.3,54.0],["2026-11-01T12:40:13+00:00",61,24.0,65.0,42.4,54.0],["2026-11-01T12:40:30+00:00",62,24.0,65.0,41.8,54.0],["2026-11-01T12:40:48+00:00",63,24.0,65.0,41.3,54.0],["2026-11-01T12:41:05+00:00",64,24.0,65.0,40.7,54.0],["2026-11-01T12:41:22+00:00",65,24.0,65.0,39.9,54.0],["2026-11-01T12:41:40+00:00",66,24.0,65.0,39.0,54.0],["2026-11-01T12:41:57+00:00",67,24.0,65.0,38.5,54.0],["2026-11-01T12:42:15+00:00",68,32.0,44.5,37.6,54.0],["2026-11-01T12:42:32+00:00",69,32.0,45.0,37.0,90.0],["2026-11-01T12:42:50+00:00",70,32.0,45.0,36.2,90.0],["2026-11-01T12:43:07+00:00",71,32.0,45.0,35.7,90.0],["2026-11-01T12:43:25+00:00",72,32.0,45.0,35.1,90.0],["2026-11-01T12:43:42+00:00",73,32.0,45.0,34.4,90.0],["2026-11-01T12:44:00+00:00",74,32.0,45.0,33.9,90.0],["2026-11-01T12:44:17+00:00",75,32.0,45.0,32.9,90.0],["2026-11-01T12:44:35+00:00",76,32.0,45.0,32.3,90.0],["2026-11-01T12:44:52+00:00",77,32.0,45.0,31.5,90.0],["2026-11-01T12:45:10+00:00",78,32.0,45.0,30.9,90.0],["2026-11-01T12:45:27+00:00",79,32.0,45.0,30.4,90.0],["2026-11-01T12:45:45+00:00",80,32.0,45.0,29.8,90.0],["2026-11-01T12:46:03+00:00",81,32.0,45.0,29.1,90.0],["2026-11-01T12:46:20+00:00",82,32.0,45.0,28.5,90.0],["2026-11-01T12:46:38+00:00",83,32.0,45.0,27.7,90.0],["2026-11-01T12:46:55+00:00",84,32.0,45.0,27.0,90.0],["2026-11-01T12:47:13+00:00",85,32.0,45.0,26.1,90.0],["2026-11-01T12:47:30+00:00",86,32.0,45.0,25.3,90.0],["2026-11-01T12:47:48+00:00",87,32.0,45.0,24.8,90.0],["2026-11-01T12:48:05+00:00",88,32.0,45.0,24.1,90.0],["2026-11-01T12:48:23+00:00",89,32.0,45.0,23.2,90.0],["2026-11-01T12:48:40+00:00",90,32.0,45.0,22.2,90.0],["2026-11-01T12:48:58+00:00",91,32.0,45.0,21.7,90.0],["2026-11-01T12:49:15+00:00",92,32.0,45.0,21.2,90.0],["2026-11-01T12:49:33+00:00",93,32.0,45.0,20.3,90.0],["2026-11-01T12:49:50+00:00",94,32.0,45.0,19.4,90.0],["2026-11-01T12:50:08+00:00",95,32.0,45.0,18.7,90.0],["2026-11-01T12:50:25+00:00",96,32.0,45.0,17.9,90.0],["2026-11-01T12:50:42+00:00",97,32.0,45.0,17.1,90.0],["2026-11-01T12:51:00+00:00",98,32.0,45.0,16.6,90.0],["2026-11-01T12:51:17+00:00",99,32.0,45.0,15.8,90.0],["2026-11-01T12:51:35+00:00",100,32.0,45.0,85.0,90.0],["2026-11-01T12:51:52+00:00",101,32.0,45.0,84.5,90.0],["2026-11-01T12:52:10+00:00",102,34.0,40.0,83.8,80.0],["2026-11-01T12:52:27+00:00",103,34.0,40.0,83.3,80.0],["2026-11-01T12:52:45+00:00",104,34.0,40.0,82.3,80.0],["2026-11-01T12:53:02+00:00",105,34.0,40.0,81.8,80.0],["2026-11-01T12:53:20+00:00",106,34.0,40.0,81.1,80.0],["2026-11-01T12:53:37+00:00",107,34.0,40.0,80.1,80.0],["2026-11-01T12:53:55+00:00",108,34.0,40.0,79.2,80.0],["2026-11-01T12:54:12+00:00",109,34.0,40.0,78.7,80.0],["2026-11-01T12:54:30+00:00",110,34.0,40.0,77.9,80.0],["2026-11-01T12:54:47+00:00",111,34.0,40.0,77.4,80.0],["2026-11-01T12:55:05+00:00",112,34.0,40.0,76.6,80.0],["2026-11-01T12:55:22+00:00",113,34.0,40.0,75.7,80.0],["2026-11-01T12:55:40+00:00",114,34.0,40.0,75.0,80.0],["2026-11-01T12:55:57+00:00",115,34.0,40.0,74.0,80.0],["2026-11-01T12:56:14+00:00",116,34.0,40.0,73.2,80.0],["2026-11-01T12:56:32+00:00",117,34.0,40.0,72.5,80.0],["2026-11-01T12:56:49+00:00",118,34.0,40.0,71.9,80.0],["2026-11-01T12:57:07+00:00",119,34.0,40.0,71.5,80.0],["2026-11-01T12:57:24+00:00",120,34.0,40.0,70.6,80.0],["2026-11-01T12:57:42+00:00",121,34.0,40.0,69.8,80.0],["2026-11-01T12:58:02+00:00",122,34.0,40.0,69.3,80.0],["2026-11-01T12:58:20+00:00",123,34.0,40.0,68.7,80.0],["2026-11-01T12:58:37+00:00",124,34.0,40.0,68.3,80.0],["2026-11-01T12:58:55+00:00",125,34.0,40.0,67.5,80.0],["2026-11-01T12:59:12+00:00",126,34.0,40.0,66.8,80.0],["2026-11-01T12:59:30+00:00",127,34.0,40.0,66.0,80.0],["2026-11-01T12:59:47+00:00",128,34.0,40.0,65.5,80.0],["2026-11-01T13:00:05+00:00",129,34.0,40.0,64.8,80.0],["2026-11-01T13:00:23+00:00",130,34.0,40.0,64.3,80.0],["2026-11-01T13:00:40+00:00",131,34.0,40.0,63.8,80.0],["2026-11-01T13:00:58+00:00",132,34.0,40.0,63.4,80.0],["2026-11-01T13:01:15+00:00",133,34.0,40.0,62.7,80.0],["2026-11-01T13:01:33+00:00",134,34.0,40.0,62.0,80.0],["2026-11-01T13:01:50+00:00",135,34.0,40.0,61.0,80.0],["2026-11-01T13:02:08+00:00",136,26.0,60.0,60.5,80.0],["2026-11-01T13:02:25+00:00",137,26.0,60.0,59.8,32.0],["2026-11-01T13:02:43+00:00",138,26.0,60.0,58.9,37.0],["2026-11-01T13:03:00+00:00",139,26.0,60.0,58.3,35.0],["2026-11-01T13:03:18+00:00",140,26.0,60.0,57.3,35.0],["2026-11-01T13:03:35+00:00",141,26.0,60.0,56.6,35.0],["2026-11-01T13:03:53+00:00",142,26.0,60.0,56.0,35.0],["2026-11-01T13:04:10+00:00",143,26.0,60.0,55.2,35.0],["2026-11-01T13:04:28+00:00",144,26.0,60.0,54.4,35.0],["2026-11-01T13:04:45+00:00",145,26.0,60.0,53.7,35.0],["2026-11-01T13:05:03+00:00",146,26.0,60.0,53.1,35.0],["2026-11-01T13:05:20+00:00",147,26.0,60.0,52.6,35.0],["2026-11-01T13:05:37+00:00",148,26.0,60.0,51.7,35.0],["2026-11-01T13:05:55+00:00",149,26.0,60.0,50.8,35.0],["2026-11-01T13:06:12+00:00",150,26.0,60.0,49.9,35.0],["2026-11-01T13:06:30+00:00",151,26.0,60.0,49.3,35.0],["2026-11-01T13:06:47+00:00",152,26.0,60.0,48.4,35.0],["2026-11-01T13:07:05+00:00",153,26.0,60.0,47.8,35.0],["2026-11-01T13:07:22+00:00",154,26.0,60.0,47.1,35.0],["2026-11-01T13:07:39+00:00",155,26.0,60.0,46.5,35.0],["2026-11-01T13:07:57+00:00",156,26.0,60.0,45.5,35.0],["2026-11-01T13:08:14+00:00",157,26.0,60.0,44.8,35.0],["2026-11-01T13:08:32+00:00",158,26.0,60.0,44.1,35.0],["2026-11-01T13:08:49+00:00",159,26.0,60.0,43.5,35.0],["2026-11-01T13:09:07+00:00",160,26.0,60.0,42.9,35.0],["2026-11-01T13:09:24+00:00",161,26.0,60.0,42.4,35.0],["2026-11-01T13:09:42+00:00",162,26.0,60.0,41.6,35.0],["2026-11-01T13:10:00+00:00",163,26.0,60.0,40.9,35.0],["2026-11-01T13:10:17+00:00",164,26.0,60.0,40.1,35.0],["2026-11-01T13:10:35+00:00",165,26.0,60.0,39.5,35.0],["2026-11-01T13:10:52+00:00",166,26.0,60.0,39.0,35.0],["2026-11-01T13:11:10+00:00",167,26.0,60.0,38.3,35.0],["2026-11-01T13:11:27+00:00",168,26.0,60.0,37.3,35.0],["2026-11-01T13:11:45+00:00",169,26.0,60.0,36.4,35.0],["2026-11-01T13:12:02+00:00",170,26.0,60.0,35.7,35.0],["2026-11-01T13:12:22+00:00",171,26.0,60.0,34.8,35.0],["2026-11-01T13:12:40+00:00",172,26.0,60.0,34.3,35.0],["2026-11-01T13:12:58+00:00",173,26.0,60.0,33.7,35.0],["2026-11-01T13:13:16+00:00",174,17.0,85.0,32.9,0.0],["2026-11-01T13:13:34+00:00",175,17.0,85.0,32.3,0.0],["2026-11-01T13:13:51+00:00",176,17.0,85.0,31.6,0.0],["2026-11-01T13:14:08+00:00",177,17.0,85.0,31.0,0.0],["2026-11-01T13:14:26+00:00",178,17.0,85.0,30.1,0.0],["2026-11-01T13:14:43+00:00",179,17.0,85.0,29.2,0.0],["2026-11-01T13:15:01+00:00",180,17.0,85.0,28.8,0.0],["2026-11-01T13:15:18+00:00",181,17.0,85.0,28.0,0.0],["2026-11-01T13:15:36+00:00",182,17.0,85.0,27.1,0.0],["2026-11-01T13:15:53+00:00",183,17.0,85.0,26.6,0.0],["2026-11-01T13:16:11+00:00",184,17.0,85.0,26.0,0.0],["2026-11-01T13:16:28+00:00",185,17.0,85.0,25.4,0.0],["2026-11-01T13:16:46+00:00",186,17.0,85.0,24.5,0.0],["2026-11-01T13:17:03+00:00",187,17.0,85.0,23.6,0.0],["2026-11-01T13:17:20+00:00",188,17.0,85.0,23.1,0.0],["2026-11-01T13:17:38+00:00",189,17.0,85.0,22.7,0.0],["2026-11-01T13:17:55+00:00",190,17.0,85.0,22.0,0.0],["2026-11-01T13:18:13+00:00",191,17.0,85.0,21.2,0.0],["2026-11-01T13:18:30+00:00",192,17.0,85.0,20.7,0.0],["2026-11-01T13:18:48+00:00",193,17.0,85.0,19.8,0.0],["2026-11-01T13:19:05+00:00",194,17.0,85.0,18.9,0.0],["2026-11-01T13:19:23+00:00",195,17.0,85.0,18.2,0.0],["2026-11-01T13:19:40+00:00",196,17.0,85.0,17.3,0.0],["2026-11-01T13:19:58+00:00",197,17.0,85.0,16.4,0.0],["2026-11-01T13:20:16+00:00",198,17.0,85.0,15.4,0.0],["2026-11-01T13:20:33+00:00",199,17.0,85.0,85.0,0.0],["2026-11-01T13:20:51+00:00",200,17.0,85.0,84.3,0.0],["2026-11-01T13:21:08+00:00",201,17.0,85.0,83.8,0.0],["2026-11-01T13:21:26+00:00",202,17.0,85.0,82.9,0.0],["2026-11-01T13:21:43+00:00",203,17.0,85.0,81.9,0.0],["2026-11-01T13:22:01+00:00",204,17.0,85.0,81.2,0.0],["2026-11-01T13:22:18+00:00",205,17.0,85.0,80.4,0.0],["2026-11-01T13:22:36+00:00",206,45.0,85.0,79.7,0.0],["2026-11-01T13:22:53+00:00",207,45.0,85.0,79.0,0.0],["2026-11-01T13:23:10+00:00",208,45.0,85.0,78.6,0.0],["2026-11-01T13:23:28+00:00",209,45.0,85.0,77.7,0.0],["2026-11-01T13:23:45+00:00",210,45.0,85.0,76.8,0.0],["2026-11-01T13:24:03+00:00",211,45.0,85.0,75.8,0.0],["2026-11-01T13:24:20+00:00",212,45.0,85.0,74.9,0.0],["2026-11-01T13:24:38+00:00",213,45.0,85.0,74.2,0.0],["2026-11-01T13:24:55+00:00",214,-14.7,90.0,73.2,0.0],["2026-11-01T13:25:13+00:00",215,15.0,90.0,72.5,5.0],["2026-11-01T13:25:30+00:00",216,15.0,90.0,71.6,5.0],["2026-11-01T13:25:48+00:00",217,15.0,90.0,70.7,5.0],["2026-11-01T13:26:05+00:00",218,15.0,90.0,70.3,5.0],["2026-11-01T13:26:22+00:00",219,15.0,90.0,69.4,5.0],["2026-11-01T13:26:40+00:00",220,15.0,90.0,68.5,5.0],["2026-11-01T13:26:57+00:00",221,15.0,90.0,67.6,5.0],["2026-11-01T13:27:15+00:00",222,15.0,90.0,67.1,5.0],["2026-11-01T13:27:32+00:00",223,15.0,90.0,66.5,5.0],["2026-11-01T13:27:50+00:00",224,15.0,90.0,65.6,5.0],["2026-11-01T13:28:08+00:00",225,15.0,90.0,65.0,5.0],["2026-11-01T13:28:25+00:00",226,15.0,90.0,64.2,5.0],["2026-11-01T13:28:43+00:00",227,15.0,90.0,63.7,5.0],["2026-11-01T13:29:00+00:00",228,15.0,90.0,62.9,5.0],["2026-11-01T13:29:18+00:00",229,15.0,90.0,61.9,5.0],["2026-11-01T13:29:35+00:00",230,15.0,90.0,61.1,5.0],["2026-11-01T13:29:53+00:00",231,15.0,90.0,60.3,5.0],["2026-11-01T13:30:10+00:00",232,15.0,90.0,59.7,5.0],["2026-11-01T13:30:28+00:00",233,15.0,90.0,59.2,5.0],["2026-11-01T13:30:46+00:00",234,15.0,90.0,58.2,5.0],["2026-11-01T13:31:03+00:00",235,15.0,90.0,57.8,5.0],["2026-11-01T13:31:21+00:00",236,15.0,90.0,56.9,5.0],["2026-11-01T13:31:38+00:00",237,15.0,90.0,56.2,5.0],["2026-11-01T13:31:56+00:00",238,15.0,90.0,55.4,5.0],["2026-11-01T13:32:13+00:00",239,19.9,90.0,54.5,5.0],["2026-11-01T13:32:30+00:00",240,20.0,75.0,53.6,27.0],["2026-11-01T13:32:48+00:00",241,20.0,75.0,53.2,31.0],["2026-11-01T13:33:05+00:00",242,20.0,75.0,52.7,31.0],["2026-11-01T13:33:23+00:00",243,20.0,75.0,52.1,31.0],["2026-11-01T13:33:40+00:00",244,20.0,75.0,51.5,31.0],["2026-11-01T13:33:58+00:00",245,20.0,75.0,51.0,31.0],["2026-11-01T13:34:15+00:00",246,20.0,75.0,50.6,31.0],["2026-11-01T13:34:33+00:00",247,20.0,75.0,49.6,31.0],["2026-11-01T13:34:50+00:00",248,20.0,75.0,48.9,31.0],["2026-11-01T13:35:08+00:00",249,20.0,75.0,48.4,31.0],["2026-11-01T13:35:25+00:00",250,20.0,75.0,48.0,31.0],["2026-11-01T13:35:42+00:00",251,20.0,75.0,47.1,31.0],["2026-11-01T13:36:01+00:00",252,20.0,75.0,46.5,31.0],["2026-11-01T13:36:19+00:00",253,20.0,75.0,45.7,31.0],["2026-11-01T13:36:40+00:00",254,20.0,75.0,44.8,31.0],["2026-11-01T13:36:57+00:00",255,20.0,75.0,43.9,31.0],["2026-11-01T13:37:16+00:00",256,20.0,75.0,43.3,31.0],["2026-11-01T13:37:34+00:00",257,20.0,75.0,42.4,31.0],["2026-11-01T13:37:52+00:00",258,20.0,75.0,41.6,31.0],["2026-11-01T13:38:10+00:00",259,20.0,75.0,40.7,31.0],["2026-11-01T13:38:28+00:00",260,20.0,75.0,40.1,31.0],["2026-11-01T13:38:45+00:00",261,20.0,75.0,39.2,31.0],["2026-11-01T13:39:03+00:00",262,20.0,75.0,38.6,31.0],["2026-11-01T13:39:21+00:00",263,20.0,75.0,38.2,31.0],["2026-11-01T13:39:40+00:00",264,20.0,75.0,37.6,31.0],["2026-11-01T13:39:58+00:00",265,20.0,75.0,37.2,31.0],["2026-11-01T13:40:15+00:00",266,20.0,75.0,36.2,31.0],["2026-11-01T13:40:33+00:00",267,20.0,75.0,35.6,31.0],["2026-11-01T13:40:50+00:00",268,20.0,75.0,34.7,31.0],["2026-11-01T13:41:07+00:00",269,20.0,75.0,34.0,31.0],["2026-11-01T13:41:25+00:00",270,20.0,75.0,33.5,31.0],["2026-11-01T13:41:42+00:00",271,20.0,75.0,33.0,31.0],["2026-11-01T13:42:00+00:00",272,20.0,75.0,32.3,31.0],["2026-11-01T13:42:17+00:00",273,20.0,75.0,31.8,31.0],["2026-11-01T13:42:35+00:00",274,20.0,75.0,31.1,31.0]];
+
+/* ===== Settings (same as the AI notebook) ===== */
+const THRESHOLD = 30;          // % soil moisture -> water
+const WINDOW = 21;             // readings in the rolling median
+const LIMIT = 10;              // °C from the local median -> anomaly
+const WATER_JUMP = 30;         // soil jump that marks a watering
+const NOTEBOOK_MAE = 1.91;     // cross-validated MAE from the AI notebook
+const POLL_MS = 20000;
+
+const SERIES = {
+  temp:  { name: "Temperature", unit: "°C", color: "#d95926", dec: 1, sub: "DHT22 · field 1" },
+  hum:   { name: "Humidity",    unit: "%",  color: "#3987e5", dec: 1, sub: "DHT22 · field 2" },
+  soil:  { name: "Soil moisture", unit: "%", color: "#199e70", dec: 1, sub: "Drying model · field 3" },
+  light: { name: "Light",       unit: "%",  color: "#c98500", dec: 0, sub: "Potentiometer · field 4" },
+};
+const ICONS = {
+  temp: '<path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>',
+  hum: '<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
+  soil: '<path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/>',
+  light: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+  warn: '<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+  drop: '<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+};
+const svgIcon = (name, color) => `<svg viewBox="0 0 24 24" stroke="${color || "currentColor"}">${ICONS[name]}</svg>`;
+const $ = id => document.getElementById(id);
+const fmtTime = d => d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit", timeZone: "Africa/Algiers" });
+const fmtShort = d => d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Africa/Algiers" });
+const fmt = (v, dec) => (v === null || v === undefined || Number.isNaN(v)) ? "–" : v.toFixed(dec);
+
+/* ===== State ===== */
+const state = { mode: "replay", data: [], idx: 0, playing: false, timer: null, poll: null, seenEvents: new Set(), wasNow: false, first: true };
+
+function parseRecorded(rows) {
+  return rows.map(r => ({ time: new Date(r[0]), id: r[1], temp: r[2], hum: r[3], soil: r[4], light: r[5] }));
+}
+function parseThingSpeak(feeds) {
+  const num = v => (v === null || v === undefined || v === "") ? null : parseFloat(v);
+  return feeds.map(f => ({ time: new Date(f.created_at), id: f.entry_id, temp: num(f.field1), hum: num(f.field2), soil: num(f.field3), light: num(f.field4) }))
+              .filter(r => r.temp !== null && r.hum !== null && r.soil !== null && r.light !== null);
+}
+
+/* ===== AI part (same methods as the notebook) ===== */
+function median(arr) { const s = [...arr].sort((a, b) => a - b); const m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; }
+function linfit(xs, ys) {
+  const n = xs.length, mx = xs.reduce((a, b) => a + b, 0) / n, my = ys.reduce((a, b) => a + b, 0) / n;
+  let sxy = 0, sxx = 0; for (let i = 0; i < n; i++) { sxy += (xs[i] - mx) * (ys[i] - my); sxx += (xs[i] - mx) ** 2; }
+  const slope = sxx ? sxy / sxx : 0; return { slope, intercept: my - slope * mx };
+}
+function analyze(rows) {
+  if (!rows.length) return null;
+  const t0 = rows[0].time.getTime();
+  let cycle = 1, cycleStart = 0;
+  const half = Math.floor(WINDOW / 2);
+  const out = rows.map((r, i) => {
+    const minute = (r.time.getTime() - t0) / 60000;
+    if (i > 0 && r.soil - rows[i - 1].soil > WATER_JUMP) { cycle++; cycleStart = minute; }
+    return { ...r, minute, cycle, cycleStart, t: minute - cycleStart };
+  });
+  out.forEach((r, i) => {
+    const win = out.slice(Math.max(0, i - half), Math.min(out.length, i + half + 1)).map(x => x.temp);
+    r.median = median(win); r.dev = r.temp - r.median; r.anomaly = Math.abs(r.dev) > LIMIT;
+  });
+  // group anomalies into events (consecutive readings with the same sign)
+  const events = [];
+  out.forEach((r, i) => {
+    if (!r.anomaly) return;
+    const last = events[events.length - 1], sign = Math.sign(r.dev);
+    if (last && last.end === i - 1 && last.sign === sign) { last.end = i; last.n++; last.peak = sign > 0 ? Math.max(last.peak, r.temp) : Math.min(last.peak, r.temp); }
+    else events.push({ start: i, end: i, n: 1, sign, peak: r.temp, startId: r.id, time: r.time, median: r.median });
+  });
+  events.forEach(e => {
+    e.ongoing = e.end === out.length - 1;
+    if (e.ongoing && e.n === 1) e.type = "Temperature anomaly";      // too early to tell glitch from event
+    else e.type = e.n === 1 ? "Sensor glitch" : (e.sign > 0 ? "Heat event" : "Cold event");
+  });
+  // forecast on the current drying cycle
+  const last = out[out.length - 1];
+  const cur = out.filter(r => r.cycle === last.cycle && !r.anomaly);   // anomalies are left out, as in the notebook
+  let fc = { status: "collecting", n: cur.length };
+  if (cur.length >= 4) {
+    const { slope, intercept } = linfit(cur.map(r => r.t), cur.map(r => r.soil));
+    const tCross = slope < -0.01 ? (THRESHOLD - intercept) / slope : null;
+    const left = tCross === null ? null : tCross - last.t;
+    let status = "ok";
+    if (last.soil < THRESHOLD || (left !== null && left <= 0)) status = "now";
+    else if (left === null) status = "stable";
+    else if (left < 5) status = "soon";
+    fc = { status, slope, intercept, tCross, left, n: cur.length, cycleStart: last.cycleStart };
+  }
+  return { rows: out, events, fc, last, cycles: last.cycle };
+}
+
+/* ===== Charts (plain SVG) ===== */
+function niceTicks(min, max, count) {
+  if (min === max) { min -= 1; max += 1; }
+  const span = max - min, step0 = span / count, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+  const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => span / s <= count) || 10 * mag;
+  const lo = Math.floor(min / step) * step, hi = Math.ceil(max / step) * step, t = [];
+  for (let v = lo; v <= hi + 1e-9; v += step) t.push(+v.toFixed(6));
+  return t;
+}
+const charts = {};
+function lineChart(id, opt) {
+  const el = $(id); const W = el.clientWidth || 800, H = el.clientHeight || 230;
+  const m = { l: 46, r: 18, t: 12, b: 30 };
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const xs = opt.xDomain, yt = niceTicks(opt.yMin, opt.yMax, 5);
+  const y0 = yt[0], y1 = yt[yt.length - 1];
+  const X = v => m.l + (v - xs[0]) / (xs[1] - xs[0] || 1) * iw;
+  const Y = v => m.t + ih - (v - y0) / (y1 - y0 || 1) * ih;
+  const xt = niceTicks(xs[0], xs[1], Math.max(3, Math.floor(iw / 90))).filter(v => v >= xs[0] - 1e-6 && v <= xs[1] + 1e-6);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${opt.label}">`;
+  s += `<defs><linearGradient id="g-${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${opt.color}" stop-opacity="0.28"/><stop offset="1" stop-color="${opt.color}" stop-opacity="0"/></linearGradient></defs>`;
+  yt.forEach(v => { s += `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--grid)"/><text x="${m.l - 8}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="var(--text-3)">${v}</text>`; });
+  xt.forEach(v => { s += `<text x="${X(v)}" y="${H - 9}" text-anchor="middle" font-size="11" fill="var(--text-3)">${v} min</text>`; });
+  s += `<line x1="${m.l}" x2="${W - m.r}" y1="${m.t + ih}" y2="${m.t + ih}" stroke="var(--axis)"/>`;
+  if (opt.threshold !== undefined) {
+    s += `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(opt.threshold)}" y2="${Y(opt.threshold)}" stroke="var(--critical)" stroke-width="1.5" stroke-dasharray="6 5"/>`;
+    s += `<text x="${m.l + 8}" y="${Y(opt.threshold) - 6}" text-anchor="start" font-size="11" font-weight="600" fill="#ffb3b3">water below ${opt.threshold} %</text>`;
+  }
+  const pts = opt.points;
+  if (pts.length) {
+    const path = pts.map((p, i) => `${i ? "L" : "M"}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join("");
+    s += `<path d="${path}L${X(pts[pts.length - 1][0]).toFixed(1)},${m.t + ih}L${X(pts[0][0]).toFixed(1)},${m.t + ih}Z" fill="url(#g-${id})"/>`;
+    if (opt.median) s += `<path d="${opt.median.map((p, i) => `${i ? "L" : "M"}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join("")}" fill="none" stroke="var(--text-2)" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.8"/>`;
+    s += `<path d="${path}" fill="none" stroke="${opt.color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    if (opt.forecast) {
+      const f = opt.forecast;
+      s += `<line x1="${X(f.x0)}" y1="${Y(f.y0)}" x2="${X(f.x1)}" y2="${Y(f.y1)}" stroke="var(--text)" stroke-width="1.8" stroke-dasharray="6 5" opacity="0.9"/>`;
+      s += `<circle cx="${X(f.x1)}" cy="${Y(f.y1)}" r="7" fill="var(--critical)" stroke="var(--surface)" stroke-width="2"/>`;
+      const anchor = X(f.x1) > W - 150 ? "end" : "start", dx = anchor === "end" ? -12 : 12;
+      s += `<text x="${X(f.x1) + dx}" y="${Y(f.y1) + 22}" text-anchor="${anchor}" font-size="12" font-weight="700" fill="var(--text)">${f.label}</text>`;
+    }
+    const lp = pts[pts.length - 1];
+    s += `<circle cx="${X(lp[0])}" cy="${Y(lp[1])}" r="5" fill="${opt.color}" stroke="var(--surface)" stroke-width="2"><animate attributeName="r" values="5;8;5" dur="1.6s" repeatCount="indefinite"/></circle>`;
+    (opt.flags || []).forEach(p => { s += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="4" fill="var(--critical)" stroke="var(--surface)" stroke-width="2"/>`; });
+  }
+  s += `<line class="xh" x1="0" x2="0" y1="${m.t}" y2="${m.t + ih}" stroke="var(--text-2)" stroke-dasharray="3 3" opacity="0"/>`;
+  s += `<rect x="${m.l}" y="${m.t}" width="${iw}" height="${ih}" fill="transparent" style="cursor:crosshair"/></svg><div class="tip"></div>`;
+  el.innerHTML = s;
+  charts[id] = { X, m, iw, xs, opt, el };
+  const rect = el.querySelector("rect"), xh = el.querySelector(".xh"), tip = el.querySelector(".tip");
+  rect.addEventListener("mousemove", ev => {
+    if (!opt.rows.length) return;
+    const box = el.getBoundingClientRect(), sx = (ev.clientX - box.left) * (W / box.width);
+    const xv = xs[0] + (sx - m.l) / iw * (xs[1] - xs[0]);
+    let best = 0; opt.rows.forEach((r, i) => { if (Math.abs(r.minute - xv) < Math.abs(opt.rows[best].minute - xv)) best = i; });
+    const r = opt.rows[best], px = X(r.minute);
+    xh.setAttribute("x1", px); xh.setAttribute("x2", px); xh.setAttribute("opacity", 1);
+    tip.style.left = (px / W * box.width) + "px"; tip.style.top = (Y(r[opt.key]) / H * box.height) + "px"; tip.style.opacity = 1;
+    tip.innerHTML = `<div class="muted">${fmtTime(r.time)} · entry ${r.id}</div><b>${fmt(r[opt.key], SERIES[opt.key].dec)} ${SERIES[opt.key].unit}</b>${r.anomaly && opt.key === "temp" ? ' <span style="color:#ffb3b3;font-weight:700">· anomaly</span>' : ""}`;
+  });
+  rect.addEventListener("mouseleave", () => { xh.setAttribute("opacity", 0); tip.style.opacity = 0; });
+}
+function spark(values, color) {
+  if (values.length < 2) return "";
+  const w = 120, h = 42, mn = Math.min(...values), mx = Math.max(...values), sp = mx - mn || 1;
+  const p = values.map((v, i) => `${(i / (values.length - 1) * (w - 4) + 2).toFixed(1)},${(h - 4 - (v - mn) / sp * (h - 8)).toFixed(1)}`).join(" ");
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}"><polyline points="${p}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+}
+
+/* ===== Rendering ===== */
+function visibleRows() { return state.mode === "replay" ? state.data.slice(0, state.idx + 1) : state.data; }
+function render() {
+  const rows = visibleRows();
+  const A = analyze(rows);
+  if (!A) { renderEmpty(); return; }
+  const { last, fc, events } = A;
+  const all = analyze(state.data);
+  const xmax0 = state.mode === "replay" ? all.last.minute : last.minute;
+
+  // KPI cards
+  Object.keys(SERIES).forEach(k => {
+    const S = SERIES[k], vals = A.rows.slice(-40).map(r => r[k]);
+    const prev = A.rows.length > 10 ? A.rows[A.rows.length - 11][k] : null;
+    const d = prev === null ? null : last[k] - prev;
+    let flag = "";
+    if (k === "temp" && last.anomaly) flag = `<span class="flag crit">${svgIcon("warn")}Anomaly</span>`;
+    if (k === "soil") flag = last.soil < THRESHOLD ? `<span class="flag crit">${svgIcon("drop")}Dry</span>` : `<span class="flag ok">${svgIcon("check")}OK</span>`;
+    $(`k-${k}`).innerHTML = `<i class="bar" style="background:${S.color}"></i>
+      <div class="top"><div class="ic" style="background:${S.color}26">${svgIcon(k, S.color)}</div>
+      <div><div class="name">${S.name}</div><div class="sub">${S.sub}</div></div><div class="spacer"></div>${flag}</div>
+      <div class="row"><div><div class="val">${fmt(last[k], S.dec)}<small>${S.unit}</small></div>
+      <div class="delta">${d === null ? "&nbsp;" : Math.abs(d) < 0.05 ? "no change in 10 readings" : (d > 0 ? "▲ +" : "▼ ") + fmt(d, S.dec) + " " + S.unit + " in 10 readings"}</div></div>${spark(vals, S.color)}</div>`;
+  });
+
+  // forecast hero
+  const pct = Math.max(0, Math.min(1, last.soil / 100));
+  const C = 2 * Math.PI * 50;
+  $("gaugeArc").setAttribute("stroke-dasharray", `${(pct * C).toFixed(1)} ${C.toFixed(1)}`);
+  $("gaugeArc").setAttribute("stroke", last.soil < THRESHOLD ? "#ef6b6b" : "url(#gaugeGrad)");
+  const ang = THRESHOLD / 100 * 2 * Math.PI;
+  $("gaugeTick").setAttribute("x1", 60 + 44 * Math.cos(ang)); $("gaugeTick").setAttribute("y1", 60 + 44 * Math.sin(ang));
+  $("gaugeTick").setAttribute("x2", 60 + 58 * Math.cos(ang)); $("gaugeTick").setAttribute("y2", 60 + 58 * Math.sin(ang));
+  $("gaugeVal").textContent = fmt(last.soil, 1) + "%";
+  const hl = $("headline"), card = $("heroCard");
+  hl.classList.remove("now"); card.classList.remove("now");
+  let flag = "";
+  if (fc.status === "now") { hl.textContent = "Water now"; hl.classList.add("now"); card.classList.add("now"); flag = `<span class="flag crit">${svgIcon("drop")}Soil moisture at or below 30 %</span>`; }
+  else if (fc.status === "soon") { hl.textContent = fc.left < 1 ? `Water in ${Math.max(1, Math.round(fc.left * 60))} s` : `Water in ${fmt(fc.left, 1)} min`; flag = `<span class="flag warn">${svgIcon("clock")}Soon: under 5 minutes</span>`; }
+  else if (fc.status === "ok") { hl.textContent = `Water in ${Math.round(fc.left)} min`; flag = `<span class="flag ok">${svgIcon("check")}No watering needed yet</span>`; }
+  else if (fc.status === "stable") { hl.textContent = "Soil is stable"; flag = `<span class="flag ok">${svgIcon("check")}Not drying</span>`; }
+  else { hl.textContent = "Collecting data…"; flag = `<span class="flag ok">${svgIcon("clock")}Needs 4 readings after a watering</span>`; }
+  $("heroFlag").innerHTML = flag;
+  const factsArr = [
+    [fc.slope !== undefined ? fmt(-fc.slope, 2) + " %/min" : "–", "drying speed"],
+    [fmt(last.t, 1) + " min", "since watering"],
+    [String(A.cycles), "watering cycle"],
+    [NOTEBOOK_MAE.toFixed(2) + " pts", "model error (MAE)"],
+  ];
+  $("facts").innerHTML = factsArr.map(f => `<div class="fact"><b>${f[0]}</b><span>${f[1]}</span></div>`).join("");
+  const prog = Math.max(0, Math.min(1, (last.soil - THRESHOLD) / (85 - THRESHOLD)));
+  $("prog").style.width = (prog * 100).toFixed(1) + "%";
+  $("progLabel").textContent = `now ${fmt(last.soil, 1)} %`;
+
+  // anomaly events
+  $("anomN").textContent = events.length;
+  $("anomT").textContent = events.length === 1 ? "event detected" : "events detected";
+  $("events").innerHTML = events.length ? events.slice().reverse().map(e => `<div class="ev"><div class="ic">${svgIcon("warn")}</div>
+      <div><b>${e.type}</b><p>${fmtShort(e.time)} · ${e.n} reading${e.n > 1 ? "s" : ""}${e.ongoing ? " · ongoing" : ""} · local median ${fmt(e.median, 1)} °C</p></div>
+      <div class="v">${fmt(e.peak, 1)} °C</div></div>`).join("")
+    : `<div class="none">No anomaly so far. Every temperature reading is within 10 °C of its local median.</div>`;
+
+  // charts
+  let fcLine = null, xmax = xmax0;
+  if (fc.tCross !== null && fc.tCross !== undefined && fc.status !== "now") {
+    const x1 = fc.cycleStart + fc.tCross;
+    xmax = Math.max(xmax, x1 + 1);
+    fcLine = { x0: last.minute, y0: fc.intercept + fc.slope * last.t, x1, y1: THRESHOLD, label: `water at ${fmtShort(new Date(last.time.getTime() + fc.left * 60000))}` };
+  }
+  const xd = [0, Math.max(1, xmax)];
+  const P = k => A.rows.map(r => [r.minute, r[k]]);
+  const rng = k => { const v = (state.mode === "replay" ? all.rows : A.rows).map(r => r[k]); return [Math.min(...v), Math.max(...v)]; };
+  const [tmin, tmax] = rng("temp");
+  lineChart("c-soil", { key: "soil", rows: A.rows, label: "Soil moisture over time with the AI forecast", color: SERIES.soil.color, points: P("soil"), xDomain: xd, yMin: 0, yMax: 100, threshold: THRESHOLD, forecast: fcLine });
+  lineChart("c-temp", { key: "temp", rows: A.rows, label: "Temperature over time with anomalies", color: SERIES.temp.color, points: P("temp"), xDomain: xd, yMin: Math.min(0, tmin), yMax: tmax + 2,
+    median: A.rows.map(r => [r.minute, r.median]), flags: A.rows.filter(r => r.anomaly).map(r => [r.minute, r.temp]) });
+  lineChart("c-hum", { key: "hum", rows: A.rows, label: "Air humidity over time", color: SERIES.hum.color, points: P("hum"), xDomain: xd, yMin: 0, yMax: 100 });
+  lineChart("c-light", { key: "light", rows: A.rows, label: "Light over time", color: SERIES.light.color, points: P("light"), xDomain: xd, yMin: 0, yMax: 100 });
+
+  // table view
+  $("tbl").innerHTML = `<table><thead><tr><th>Time</th><th>Entry</th><th>Temp (°C)</th><th>Humidity (%)</th><th>Soil (%)</th><th>Light (%)</th><th>Cycle</th></tr></thead><tbody>${
+    A.rows.slice().reverse().map(r => `<tr class="${r.anomaly ? "bad" : ""}"><td>${fmtTime(r.time)}</td><td>${r.id}</td><td>${fmt(r.temp, 1)}${r.anomaly ? " ⚠" : ""}</td><td>${fmt(r.hum, 1)}</td><td>${fmt(r.soil, 1)}</td><td>${fmt(r.light, 0)}</td><td>${r.cycle}</td></tr>`).join("")}</tbody></table>`;
+
+  // clocks
+  if (state.mode === "replay") $("clock").innerHTML = `<b>${fmtTime(last.time)}</b> · reading ${state.idx + 1} / ${state.data.length}`;
+  else $("liveClock").innerHTML = `Last reading <b>${fmtTime(last.time)}</b> · ${state.data.length} readings`;
+
+  // toasts for new events and new "water now"
+  if (!state.first) {
+    events.forEach(e => { if (!state.seenEvents.has(e.startId)) toast("alert", "Temperature anomaly detected", `Temperature ${fmt(e.peak, 1)} °C at ${fmtShort(e.time)}, far from its local median (${fmt(e.median, 1)} °C).`); });
+    if (fc.status === "now" && !state.wasNow) toast("water", "Water the greenhouse now", `Soil moisture is ${fmt(last.soil, 1)} %, at the 30 % threshold.`);
+  }
+  events.forEach(e => state.seenEvents.add(e.startId));
+  state.wasNow = fc.status === "now";
+  state.first = false;
+}
+function renderEmpty() {
+  Object.keys(SERIES).forEach(k => { $(`k-${k}`).innerHTML = `<div class="name">${SERIES[k].name}</div><div class="none" style="margin-top:12px">Waiting for data</div>`; });
+}
+function toast(kind, title, text) {
+  const t = document.createElement("div");
+  t.className = "toast" + (kind === "water" ? " water" : "");
+  t.innerHTML = `<div class="ic">${svgIcon(kind === "water" ? "drop" : "warn")}</div><div><b>${title}</b>${text}</div>`;
+  $("toasts").appendChild(t);
+  setTimeout(() => { t.style.transition = "opacity .4s, transform .4s"; t.style.opacity = 0; t.style.transform = "translateX(30px)"; }, 4200);
+  setTimeout(() => t.remove(), 4700);
+}
+function setStatus(kind, text) { $("statusDot").className = "dot" + (kind === "idle" ? " idle" : kind === "err" ? " err" : ""); $("statusText").textContent = text; }
+
+/* ===== Replay ===== */
+function stopPlay() {
+  state.playing = false; clearInterval(state.timer);
+  $("playBtn").innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg><span>Play</span>`;
+  if (state.mode === "replay") setStatus("idle", "Replay · paused");
+}
+function startPlay() {
+  if (state.idx >= state.data.length - 1) { state.idx = 0; state.seenEvents.clear(); state.wasNow = false; state.first = true; }
+  state.playing = true;
+  $("playBtn").innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg><span>Pause</span>`;
+  setStatus("live", "Replay · playing");
+  const step = () => {
+    if (state.idx >= state.data.length - 1) { stopPlay(); return; }
+    state.idx++; $("scrub").value = state.idx; render();
+  };
+  clearInterval(state.timer);
+  state.timer = setInterval(step, 700 / Number($("speed").value));
+  render();
+}
+$("playBtn").onclick = () => state.playing ? stopPlay() : startPlay();
+$("speed").onchange = () => { if (state.playing) startPlay(); };
+$("scrub").oninput = e => {
+  const v = Number(e.target.value);
+  if (v < state.idx) { state.seenEvents.clear(); state.first = true; }
+  state.idx = v; render();
+};
+
+function enterReplay() {
+  clearInterval(state.poll); state.mode = "replay";
+  $("tabReplay").classList.add("on"); $("tabLive").classList.remove("on");
+  $("replayBar").classList.remove("hidden"); $("liveBar").classList.add("hidden");
+  state.data = parseRecorded(RECORDED);
+  $("scrub").max = state.data.length - 1;
+  state.idx = state.data.length - 1; $("scrub").value = state.idx;
+  state.seenEvents.clear(); state.first = true;
+  $("srcNote").textContent = `Recorded run: ${state.data.length} readings sent by the simulated ESP32 to ThingSpeak on 1 November 2026`;
+  setStatus("idle", "Replay · paused"); render();
+}
+
+/* ===== Live ThingSpeak ===== */
+async function fetchLive() {
+  const id = $("chId").value.trim(), key = $("chKey").value.trim();
+  if (!/^\d+$/.test(id)) { $("liveMsg").textContent = "Enter your numeric channel ID."; $("liveMsg").className = "msg err"; return; }
+  const url = `https://api.thingspeak.com/channels/${id}/feeds.json?results=8000${key ? "&api_key=" + encodeURIComponent(key) : ""}`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (!json || !Array.isArray(json.feeds)) throw new Error("unexpected answer (private channel? add the Read API key)");
+    const rows = parseThingSpeak(json.feeds);
+    if (!rows.length) throw new Error("the channel has no complete readings yet");
+    state.data = rows;
+    $("liveMsg").textContent = `Connected to “${(json.channel && json.channel.name) || "channel " + id}”. Refreshes every 20 seconds.`;
+    $("liveMsg").className = "msg";
+    $("srcNote").textContent = `Live data from ThingSpeak channel ${id}`;
+    setStatus("live", "Live · connected");
+    render();
+  } catch (err) {
+    $("liveMsg").textContent = `Could not read the channel: ${err.message}. Check the channel ID and Read API key.`;
+    $("liveMsg").className = "msg err";
+    setStatus("err", "Live · error");
+  }
+}
+function enterLive() {
+  stopPlay(); state.mode = "live";
+  $("tabLive").classList.add("on"); $("tabReplay").classList.remove("on");
+  $("liveBar").classList.remove("hidden"); $("replayBar").classList.add("hidden");
+  try { const saved = localStorage.getItem("greenhouse.channel"); if (saved && !$("chId").value) $("chId").value = saved; } catch (e) {}
+  setStatus("idle", "Live · not connected");
+}
+$("connectBtn").onclick = () => {
+  try { localStorage.setItem("greenhouse.channel", $("chId").value.trim()); } catch (e) {}
+  state.seenEvents.clear(); state.first = true; state.wasNow = false;
+  clearInterval(state.poll); fetchLive(); state.poll = setInterval(fetchLive, POLL_MS);
+};
+$("tabReplay").onclick = enterReplay;
+$("tabLive").onclick = enterLive;
+
+let resizeTimer; window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => state.data.length && render(), 150); });
+enterReplay();
+</script>
+</body>
+</html>
