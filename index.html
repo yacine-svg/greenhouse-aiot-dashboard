@@ -172,6 +172,35 @@ input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); heigh
 .vs .fact { flex: 1; }
 .wxnote { font-size: 12px; color: var(--text-3); margin-top: 12px; }
 
+/* weather AI page */
+.wxhero h2 { font-size: 32px; font-weight: 800; letter-spacing: -0.8px; margin: 8px 0 10px; line-height: 1.15; }
+.wxhero p { font-size: 15px; line-height: 1.6; color: var(--text-2); max-width: 900px; }
+.steps2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px; }
+@media (max-width: 800px) { .steps2 { grid-template-columns: 1fr; } }
+.step { background: rgba(0,0,0,0.22); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px 18px; }
+.step b { font-size: 15px; } .step p { font-size: 13.5px; margin-top: 6px; }
+.formula { font: 600 14px ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; background: rgba(167,139,250,0.10);
+  border: 1px solid rgba(167,139,250,0.35); color: #e4dcff; padding: 10px 12px; border-radius: 10px; margin-top: 10px; overflow-x: auto; white-space: nowrap; }
+.sim { display: grid; grid-template-columns: 340px 1fr; gap: 28px; }
+@media (max-width: 980px) { .sim { grid-template-columns: 1fr; } }
+.slider { margin-bottom: 16px; }
+.slider .top { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: var(--text-2); margin-bottom: 6px; }
+.slider .top b { color: var(--text); font-variant-numeric: tabular-nums; }
+.slider input { width: 100%; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 18px; }
+.chip { border: 1px solid var(--card-border); background: rgba(255,255,255,0.05); color: var(--text); border-radius: 999px; padding: 6px 12px;
+  font: 600 12.5px "Inter", system-ui, sans-serif; cursor: pointer; }
+.chip:hover { border-color: rgba(167,139,250,0.6); }
+.calc { font-size: 13.5px; line-height: 1.9; color: var(--text-2); background: rgba(0,0,0,0.22); border: 1px solid var(--card-border);
+  border-radius: 14px; padding: 12px 16px; margin-top: 14px; font-variant-numeric: tabular-nums; }
+.calc b { color: var(--text); }
+.figs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+@media (max-width: 900px) { .figs { grid-template-columns: 1fr; } }
+.figs figure { background: #f7f8f6; border-radius: 14px; padding: 10px; }
+.figs img { width: 100%; height: auto; display: block; border-radius: 8px; }
+.figs figcaption { color: #3b4740; font-size: 12.5px; padding: 8px 4px 2px; }
+.res td, .res th { text-align: right; } .res td:first-child, .res th:first-child { text-align: left; }
+
 /* charts */
 .chart-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
 .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--text-2); }
@@ -227,6 +256,7 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
   <div class="tabs" role="tablist">
     <button id="tabReplay" class="on" role="tab">Replay</button>
     <button id="tabLive" role="tab">Live ThingSpeak</button>
+    <button id="tabWx" role="tab">Weather AI</button>
   </div>
   <div class="status"><span id="statusDot" class="dot idle"></span><span id="statusText">Replay · paused</span></div>
 </header>
@@ -250,7 +280,7 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
   <div class="clock" id="liveClock"></div>
 </div>
 
-<div class="grid">
+<div class="grid" id="dashGrid">
   <!-- KPI cards -->
   <div class="card kpi span3" id="k-temp"></div>
   <div class="card kpi span3" id="k-hum"></div>
@@ -332,10 +362,90 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
   </div>
 </div>
 
-<details class="table card" style="padding:14px 18px">
+<details class="table card" id="dashTable" style="padding:14px 18px">
   <summary>Show the data table</summary>
   <div class="tbl" id="tbl"></div>
 </details>
+
+<section id="wxPage" class="hidden">
+  <div class="grid">
+    <div class="card span12 wxhero">
+      <div class="eyebrow" style="color:#c9b8ff">Weather-aware AI · extension</div>
+      <h2>How the weather changes when your plants need water</h2>
+      <p>Soil dries faster on a hot, bright, dry day than on a cool, humid night. This model learned that relationship, so it can predict how fast the soil is drying from the temperature, humidity and light, and from that, when the plant will need water.</p>
+      <div class="steps2">
+        <div class="step"><b>1 · Training (done once)</b><p>The model studied 56 days of synthetic greenhouse data (14 days per season) and learned four numbers. Together they are the model:</p>
+          <div class="formula">drying speed = 0.51 + 0.036 × temperature − 0.010 × humidity + 0.013 × light</div></div>
+        <div class="step"><b>2 · Using it (every new reading)</b><p>Put the current readings into the formula to get the drying speed in % per hour. Then divide how far the soil is above 30 % by that speed: the result is the number of hours until watering. Try it below.</p></div>
+      </div>
+      <p style="margin-top:14px;font-size:13px;color:var(--text-3)">The training data is synthetic, generated by us from a simplified evaporation formula, not measured in a real greenhouse. The model shows how the approach works; real sensors would be needed to measure its accuracy on real plants.</p>
+    </div>
+
+    <div class="card span12">
+      <div class="chart-head"><h3>Try the model</h3><span class="pill2">Interactive</span></div>
+      <div class="sim">
+        <div>
+          <div class="chips" id="presets"></div>
+          <div class="slider"><div class="top"><span>Temperature</span><b id="vT"></b></div><input type="range" id="sT" min="0" max="45" step="0.5" value="34"></div>
+          <div class="slider"><div class="top"><span>Air humidity</span><b id="vH"></b></div><input type="range" id="sH" min="10" max="100" step="1" value="40"></div>
+          <div class="slider"><div class="top"><span>Light</span><b id="vL"></b></div><input type="range" id="sL" min="0" max="100" step="1" value="80"></div>
+          <div class="slider"><div class="top"><span>Soil moisture now</span><b id="vS"></b></div><input type="range" id="sS" min="30" max="85" step="0.5" value="54"></div>
+        </div>
+        <div>
+          <div class="eyebrow" style="color:#c9b8ff">Next watering</div>
+          <div class="headline" id="simHead" style="font-size:44px">–</div>
+          <div class="contrib" id="simContrib" style="max-width:640px"></div>
+          <div class="legend" style="margin-top:10px"><span><i class="sw pt" style="background:#eb6834;border-radius:3px"></i>speeds up drying</span><span><i class="sw pt" style="background:#3987e5;border-radius:3px"></i>slows it down</span></div>
+          <div class="calc" id="simCalc"></div>
+          <div class="chart" id="simChart" style="height:210px;margin-top:14px"></div>
+          <div class="legend" style="margin-top:6px"><span><i class="sw" style="border-color:#a78bfa"></i>Weather-aware model</span><span><i class="sw dash" style="border-color:var(--text-2)"></i>Time-only model (one fixed speed: 0.78 %/h)</span><span><i class="sw dash" style="border-color:var(--critical)"></i>30 % threshold</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card span12" id="apiCard">
+      <div class="chart-head">
+        <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>Real weather forecast</h3>
+        <span class="pill2">Open-Meteo API</span>
+      </div>
+      <div class="controls" style="margin:10px 0 14px;padding:12px 14px">
+        <label class="lbl" for="city">City</label>
+        <select id="city">
+          <option value="36.3650,6.6147">Constantine</option><option value="36.7538,3.0588">Algiers</option>
+          <option value="35.6971,-0.6308">Oran</option><option value="36.9000,7.7667">Annaba</option>
+          <option value="34.8504,5.7280">Biskra</option>
+        </select>
+        <label class="lbl" for="warm">Greenhouse warmer than outside by</label>
+        <select id="warm"><option value="0">0 °C</option><option value="3">3 °C</option><option value="5" selected>5 °C</option><option value="8">8 °C</option></select>
+        <button class="btn" id="wxFetch"><span>Get forecast</span></button>
+        <span class="msg" id="apiMsg">Uses the soil moisture set in the simulator above as the starting point.</span>
+      </div>
+      <div id="apiBody"></div>
+    </div>
+
+    <div class="card span12">
+      <div class="chart-head"><h3>How well it learned (synthetic data)</h3></div>
+      <div class="tbl" style="max-height:none;margin-top:6px">
+        <table class="res"><thead><tr><th>Test</th><th>Time-only model</th><th>Weather-aware model</th></tr></thead><tbody>
+          <tr><td>Drying speed error, test days</td><td>0.42 to 0.90 %/h</td><td>0.11 to 0.21 %/h</td></tr>
+          <tr><td>Drying speed error, a season it never saw</td><td>0.43 to 1.03 %/h</td><td>0.14 to 0.39 %/h</td></tr>
+          <tr><td>Watering forecast error, summer</td><td>17.1 h</td><td>1.1 h</td></tr>
+          <tr><td>Watering forecast error, winter</td><td>23.4 h</td><td>4.1 h</td></tr>
+        </tbody></table>
+      </div>
+      <div class="figs">
+        <figure><img src="img/seasons.png" alt="Synthetic soil moisture over 14 days per season: 2 waterings in winter, 3 in spring, 9 in summer, 3 in autumn"><figcaption>The synthetic data: the plant needs water about every 1.6 days in summer but every 7 days in winter.</figcaption></figure>
+        <figure><img src="img/forecast_error.png" alt="Average watering forecast error per season for the time-only and weather-aware models"><figcaption>Average watering forecast error on test days: the weather-aware model is far better in summer and winter.</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="card span12">
+      <div class="chart-head"><h3>Use it live</h3></div>
+      <p style="font-size:14px;color:var(--text-2);line-height:1.7;max-width:900px">Run the weather-driven Wokwi sketch (version 2), in which the soil dries according to the same evaporation formula. Then open the <b>Live ThingSpeak</b> tab and connect your channel: the <b>Weather-aware forecast</b> card applies this model to every new reading and compares its predicted drying speed with the measured one.</p>
+      <button class="btn" id="goLive" style="margin-top:12px"><span>Open Live ThingSpeak</span></button>
+    </div>
+  </div>
+</section>
 
 <footer>
   <span>AIoT 2026/2027 · M2 SDIA · Dr KITOUNI Ilham · Mohammed Yassine Sekhri &amp; Amokrane Ahmed</span>
@@ -701,10 +811,18 @@ $("scrub").oninput = e => {
   state.idx = v; render();
 };
 
+function showView(tab) {
+  ["tabReplay", "tabLive", "tabWx"].forEach(t => $(t).classList.toggle("on", t === tab));
+  const wx = tab === "tabWx";
+  $("wxPage").classList.toggle("hidden", !wx);
+  $("dashGrid").classList.toggle("hidden", wx);
+  $("dashTable").classList.toggle("hidden", wx);
+  $("replayBar").classList.toggle("hidden", tab !== "tabReplay");
+  $("liveBar").classList.toggle("hidden", tab !== "tabLive");
+}
 function enterReplay() {
   clearInterval(state.poll); state.mode = "replay";
-  $("tabReplay").classList.add("on"); $("tabLive").classList.remove("on");
-  $("replayBar").classList.remove("hidden"); $("liveBar").classList.add("hidden");
+  showView("tabReplay");
   state.data = parseRecorded(RECORDED);
   $("scrub").max = state.data.length - 1;
   state.idx = state.data.length - 1; $("scrub").value = state.idx;
@@ -747,8 +865,7 @@ async function fetchLive() {
 }
 function enterLive() {
   stopPlay(); state.mode = "live";
-  $("tabLive").classList.add("on"); $("tabReplay").classList.remove("on");
-  $("liveBar").classList.remove("hidden"); $("replayBar").classList.add("hidden");
+  showView("tabLive");
   try { const saved = localStorage.getItem("greenhouse.channel"); if (saved && !$("chId").value) $("chId").value = saved; } catch (e) {}
   setStatus("idle", "Live · not connected");
 }
@@ -760,7 +877,150 @@ $("connectBtn").onclick = () => {
 $("tabReplay").onclick = enterReplay;
 $("tabLive").onclick = enterLive;
 
-let resizeTimer; window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => state.data.length && render(), 150); });
+/* ===== Weather AI page ===== */
+const FIXED_RATE = 0.78;   // time-only model from the extension notebook, % per hour
+const PRESETS = [
+  ["Winter night", 6, 90, 0], ["Winter noon", 18, 60, 45], ["Spring noon", 26, 50, 75],
+  ["Summer noon", 36, 30, 95], ["Summer night", 20, 60, 0], ["Autumn noon", 27, 50, 65],
+];
+function enterWeather() {
+  stopPlay(); clearInterval(state.poll); state.mode = "weather";
+  showView("tabWx"); setStatus("idle", "Weather AI · simulator"); renderSim();
+  if (!apiData) fetchWeather();      // load the real forecast the first time
+}
+function renderSim() {
+  const T = +$("sT").value, H = +$("sH").value, L = +$("sL").value, S = +$("sS").value;
+  $("vT").textContent = `${T.toFixed(1)} °C`; $("vH").textContent = `${H} %`; $("vL").textContent = `${L} %`; $("vS").textContent = `${S.toFixed(1)} %`;
+  const parts = [["Temperature", WX_MODEL.temp * T, `${T.toFixed(1)} °C`], ["Humidity", WX_MODEL.hum * H, `${H} %`], ["Light", WX_MODEL.light * L, `${L} %`]];
+  const raw = WX_MODEL.intercept + parts.reduce((a, p) => a + p[1], 0);
+  const rate = Math.max(0.02, raw);
+  const hoursW = (S - THRESHOLD) / rate, hoursT = (S - THRESHOLD) / FIXED_RATE;
+  const fmtH = h => h < 1 ? `${Math.round(h * 60)} min` : h < 48 ? `${h.toFixed(1)} h` : `${(h / 24).toFixed(1)} days`;
+  $("simHead").textContent = S <= THRESHOLD ? "Water now" : `Water in ${fmtH(hoursW)}`;
+  const maxAbs = 1.6;
+  const bar = v => { const w = Math.min(50, Math.abs(v) / maxAbs * 50); return v >= 0
+      ? `<i style="left:50%;width:${w}%;background:#eb6834"></i>` : `<i style="left:${50 - w}%;width:${w}%;background:#3987e5"></i>`; };
+  $("simContrib").innerHTML = parts.concat([["Base", WX_MODEL.intercept, ""]]).map(p => `<div class="crow"><span class="lab">${p[0]} <span style="color:var(--text-3);font-weight:500">${p[2]}</span></span><div class="track"><span class="mid"></span>${bar(p[1])}</div><span class="val">${p[1] >= 0 ? "+" : "−"}${Math.abs(p[1]).toFixed(2)}</span></div>`).join("");
+  $("simCalc").innerHTML = `<b>Drying speed</b> = 0.51 + 0.036 × ${T.toFixed(1)} − 0.010 × ${H} + 0.013 × ${L}
+    = 0.51 ${parts.map(p => (p[1] >= 0 ? "+ " : "− ") + Math.abs(p[1]).toFixed(2)).join(" ")} = <b>${raw.toFixed(2)} % per hour</b>${raw < 0.02 ? " (kept at 0.02 minimum)" : ""}<br>
+    <b>Time until watering</b> = (${S.toFixed(1)} − 30) ÷ ${rate.toFixed(2)} = <b>${fmtH(hoursW)}</b><br>
+    <span style="color:var(--text-3)">The time-only model always uses 0.78 % per hour, so it would say ${fmtH(hoursT)}, whatever the weather.</span>`;
+  // projection chart
+  const el = $("simChart"), W = el.clientWidth || 700, Hh = el.clientHeight || 210, m = { l: 40, r: 16, t: 10, b: 28 };
+  const iw = W - m.l - m.r, ih = Hh - m.t - m.b, xmax = Math.max(1, Math.min(240, Math.max(hoursW, hoursT) * 1.05));
+  const X = h => m.l + Math.min(h, xmax) / xmax * iw, Y = v => m.t + ih - (v - 20) / (90 - 20) * ih;
+  const yt = [20, 40, 60, 80], xt = niceTicks(0, xmax, 5).filter(v => v <= xmax);
+  const line = (h, color, dash) => { const hh = Math.min(h, xmax), v = S - (S - THRESHOLD) * (hh / h);
+    return `<line x1="${X(0)}" y1="${Y(S)}" x2="${X(hh)}" y2="${Y(v)}" stroke="${color}" stroke-width="2.2" ${dash ? 'stroke-dasharray="6 5"' : ""}/>`
+      + (h <= xmax ? `<circle cx="${X(h)}" cy="${Y(THRESHOLD)}" r="5" fill="${color}" stroke="var(--surface)" stroke-width="2"/>` : ""); };
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${Hh}" role="img" aria-label="Projected soil moisture until watering for both models">
+    ${yt.map(v => `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--grid)"/><text x="${m.l - 8}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="var(--text-3)">${v}%</text>`).join("")}
+    ${xt.map(v => `<text x="${X(v)}" y="${Hh - 8}" text-anchor="middle" font-size="11" fill="var(--text-3)">${v} h</text>`).join("")}
+    <line x1="${m.l}" x2="${W - m.r}" y1="${Y(THRESHOLD)}" y2="${Y(THRESHOLD)}" stroke="var(--critical)" stroke-dasharray="6 5" stroke-width="1.5"/>
+    ${S > THRESHOLD ? line(hoursT, "var(--text-2)", true) + line(hoursW, "#a78bfa", false) : ""}
+  </svg>`;
+}
+/* ----- Open-Meteo: real 7-day forecast, run through the weather-aware model hour by hour ----- */
+let apiData = null;
+async function fetchWeather() {
+  const [lat, lon] = $("city").value.split(","), cityName = $("city").selectedOptions[0].textContent;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}`
+    + `&current=temperature_2m,relative_humidity_2m,shortwave_radiation`
+    + `&hourly=temperature_2m,relative_humidity_2m,shortwave_radiation&forecast_days=7&timezone=Africa%2FAlgiers`;
+  $("apiMsg").textContent = `Loading the forecast for ${cityName}…`; $("apiMsg").className = "msg";
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const j = await res.json();
+    const h = j.hourly || {};
+    if (!Array.isArray(h.time) || !h.time.length) throw new Error("no hourly forecast in the answer");
+    const hours = h.time.map((t, i) => ({ t, temp: h.temperature_2m[i], hum: h.relative_humidity_2m[i], rad: h.shortwave_radiation[i] }))
+                        .filter(x => x.temp !== null && x.hum !== null && x.rad !== null);
+    // the forecast starts at midnight: keep the hours from now on
+    const nowKey = (j.current && j.current.time) ? j.current.time.slice(0, 13) : null;
+    let start = nowKey ? hours.findIndex(x => x.t.slice(0, 13) >= nowKey) : 0;
+    if (start < 0) start = 0;
+    const cur = j.current && j.current.temperature_2m !== undefined ? j.current : null;
+    const first = hours[start];
+    apiData = { city: cityName, hours: hours.slice(start),
+      current: { temp: cur ? cur.temperature_2m : first.temp, hum: cur ? cur.relative_humidity_2m : first.hum,
+                 rad: cur && cur.shortwave_radiation !== undefined ? cur.shortwave_radiation : first.rad } };
+    $("apiMsg").textContent = `Forecast for ${cityName}: ${apiData.hours.length} hours from Open-Meteo.`;
+    renderApi();
+  } catch (err) {
+    $("apiMsg").textContent = `Could not load the forecast: ${err.message}. Check the internet connection.`;
+    $("apiMsg").className = "msg err";
+  }
+}
+const radToLight = r => Math.max(0, Math.min(100, r / 10));   // 1000 W/m² of sunshine = 100 % light
+const wxRate = (t, hum, light) => Math.max(0.02, WX_MODEL.intercept + WX_MODEL.temp * t + WX_MODEL.hum * hum + WX_MODEL.light * light);
+function renderApi() {
+  if (!apiData) return;
+  const warm = +$("warm").value, S0 = +$("sS").value, c = apiData.current;
+  const curLight = radToLight(c.rad), curT = c.temp + warm;
+  // run the model hour by hour through the forecast
+  let soil = S0, waterIdx = -1;
+  const path = [{ i: 0, soil }];
+  apiData.hours.forEach((x, i) => {
+    if (waterIdx >= 0) return;
+    soil -= wxRate(x.temp + warm, x.hum, radToLight(x.rad));
+    path.push({ i: i + 1, soil });
+    if (soil < THRESHOLD) waterIdx = i + 1;
+  });
+  const fmtWhen = k => { const x = apiData.hours[Math.min(k, apiData.hours.length - 1)];
+    const d = new Date(x.t + ":00"); return d.toLocaleString("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); };
+  const head = S0 <= THRESHOLD ? "Water now" : waterIdx > 0 ? `Water on ${fmtWhen(waterIdx - 1)}` : "No watering in the next 7 days";
+  const sub = S0 <= THRESHOLD ? "Soil moisture is already at 30 %." : waterIdx > 0 ? `in about ${waterIdx} hours, with the real forecast for ${apiData.city}` : `the soil stays above 30 % for the whole forecast (${apiData.hours.length} h)`;
+  const fixedH = (S0 - THRESHOLD) / FIXED_RATE;
+  // chart: soil path over forecast hours, with night shading
+  const W = $("apiBody").clientWidth || 900, H = 230, m = { l: 40, r: 16, t: 12, b: 30 };
+  const n = Math.max(24, Math.min(apiData.hours.length, (waterIdx > 0 ? waterIdx : apiData.hours.length) + 12));
+  const iw = W - m.l - m.r, ih = H - m.t - m.b;
+  const X = k => m.l + k / n * iw, Y = v => m.t + ih - (v - 20) / (90 - 20) * ih;
+  let shade = "";
+  for (let k = 0; k < n; k++) { const x = apiData.hours[k]; if (x && x.rad < 5) shade += `<rect x="${X(k)}" y="${m.t}" width="${iw / n + 0.5}" height="${ih}" fill="rgba(57,135,229,0.07)"/>`; }
+  let ticks = "";
+  for (let k = 0; k < n; k++) { const x = apiData.hours[k]; if (x && x.t.slice(11, 13) === "00") {
+    const d = new Date(x.t + ":00"); ticks += `<line x1="${X(k)}" x2="${X(k)}" y1="${m.t}" y2="${m.t + ih}" stroke="var(--grid)"/><text x="${X(k) + 4}" y="${H - 9}" font-size="11" fill="var(--text-3)">${d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric" })}</text>`; } }
+  const pts = path.filter(p => p.i <= n).map(p => `${X(p.i).toFixed(1)},${Y(p.soil).toFixed(1)}`).join(" ");
+  const fixedEnd = Math.min(n, fixedH), fixedLine = S0 > THRESHOLD ? `<line x1="${X(0)}" y1="${Y(S0)}" x2="${X(fixedEnd)}" y2="${Y(S0 - FIXED_RATE * fixedEnd)}" stroke="var(--text-2)" stroke-width="2" stroke-dasharray="6 5"/>` : "";
+  const svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Soil moisture forecast with the real weather">${shade}
+    ${[20, 40, 60, 80].map(v => `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--grid)"/><text x="${m.l - 8}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="var(--text-3)">${v}%</text>`).join("")}${ticks}
+    <line x1="${m.l}" x2="${W - m.r}" y1="${Y(THRESHOLD)}" y2="${Y(THRESHOLD)}" stroke="var(--critical)" stroke-dasharray="6 5" stroke-width="1.5"/>
+    ${fixedLine}<polyline points="${pts}" fill="none" stroke="#a78bfa" stroke-width="2.4" stroke-linejoin="round"/>
+    ${waterIdx > 0 && waterIdx <= n ? `<circle cx="${X(waterIdx)}" cy="${Y(path[path.length - 1].soil)}" r="6" fill="var(--critical)" stroke="var(--surface)" stroke-width="2"/>` : ""}</svg>`;
+  $("apiBody").innerHTML = `
+    <div class="wx" style="margin-top:0">
+      <div>
+        <div class="eyebrow" style="color:#c9b8ff">With the real weather</div>
+        <div class="big ${S0 <= THRESHOLD ? "now" : ""}" style="font-size:30px">${head}</div>
+        <div class="small">${sub}</div>
+      </div>
+      <div class="vs">
+        <div class="fact"><b>${fmt(c.temp, 1)} °C</b><span>outside now</span></div>
+        <div class="fact"><b>${fmt(c.hum, 0)} %</b><span>humidity now</span></div>
+        <div class="fact"><b>${fmt(curLight, 0)} %</b><span>sunlight now</span></div>
+      </div>
+      <div><div class="fact"><b>${fmt(wxRate(curT, c.hum, curLight), 2)} %/h</b><span>drying speed now (greenhouse ${fmt(curT, 1)} °C)</span></div>
+        <button class="chip" id="useNow" style="margin-top:10px">Put today's weather in the simulator</button></div>
+    </div>
+    <div class="chart" style="height:230px;margin-top:14px">${svg}</div>
+    <div class="legend" style="margin-top:6px"><span><i class="sw" style="border-color:#a78bfa"></i>Weather-aware model, hour by hour</span><span><i class="sw dash" style="border-color:var(--text-2)"></i>Time-only model (0.78 %/h): ${S0 > THRESHOLD ? (fixedH < 48 ? fixedH.toFixed(0) + " h" : (fixedH / 24).toFixed(1) + " days") : "now"}</span><span><i class="sw pt" style="background:rgba(57,135,229,0.35);border-radius:2px"></i>Night</span></div>
+    <div class="wxnote">Outdoor forecast from Open-Meteo, with the greenhouse assumed ${warm} °C warmer than outside. Sunlight: 1000 W/m² of solar radiation counts as 100 % light. The soil dries fast in the sunny afternoons and almost stops at night; the time-only model cannot see this.</div>`;
+  $("useNow").onclick = () => { $("sT").value = Math.max(0, Math.min(45, curT)); $("sH").value = Math.round(Math.max(10, Math.min(100, c.hum))); $("sL").value = Math.round(curLight); renderSim(); window.scrollTo({ top: $("wxPage").offsetTop, behavior: "smooth" }); };
+}
+$("wxFetch").onclick = fetchWeather;
+$("city").onchange = () => apiData && fetchWeather();
+$("warm").onchange = renderApi;
+$("sS").addEventListener("input", renderApi);
+$("tabWx").onclick = enterWeather;
+$("goLive").onclick = () => { enterLive(); window.scrollTo({ top: 0, behavior: "smooth" }); };
+["sT", "sH", "sL", "sS"].forEach(id => $(id).addEventListener("input", renderSim));
+$("presets").innerHTML = PRESETS.map((p, i) => `<button class="chip" data-i="${i}">${p[0]}</button>`).join("");
+$("presets").addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return;
+  const p = PRESETS[+b.dataset.i]; $("sT").value = p[1]; $("sH").value = p[2]; $("sL").value = p[3]; renderSim(); });
+
+let resizeTimer; window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => state.mode === "weather" ? renderSim() : state.data.length && render(), 150); });
 enterReplay();
 </script>
 </body>

@@ -14,6 +14,7 @@ Monitoring dashboard for our AIoT greenhouse prototype: a simulated ESP32 (Wokwi
 - **AI watering forecast:** a linear regression on the current drying cycle predicts when soil moisture will fall below 30 %.
 - **Anomaly detection:** each temperature reading is compared with the median of the 21 readings around it; more than 10 °C away is flagged.
 - **Weather-aware forecast (extension, live mode):** with the weather-driven Wokwi sketch (version 2), a model trained on our synthetic seasonal dataset predicts the drying speed from temperature, humidity and light, shows how much each one speeds up or slows down drying, and compares the prediction with the measured drying speed.
+- **Weather AI page:** explains the weather-aware model, lets you try it with sliders and season presets, and runs it hour by hour through the **real 7-day weather forecast** from the free [Open-Meteo](https://open-meteo.com/) API (Constantine, Algiers, Oran, Annaba or Biskra) to predict the day and hour of the next watering.
 - Sensor cards with trends, interactive charts with tooltips, pop-up alerts and a data table.
 
 The forecast and anomaly methods are the same as in our AI notebook (weeks 5–6).
