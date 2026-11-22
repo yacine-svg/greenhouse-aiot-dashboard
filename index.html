@@ -153,6 +153,25 @@ input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); heigh
 .none { font-size: 13.5px; color: var(--text-2); padding: 14px; border: 1px dashed var(--card-border); border-radius: 14px; }
 @keyframes slidein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
+/* weather-aware model card */
+.wx { display: grid; grid-template-columns: 1.1fr 1.3fr 1fr; gap: 26px; align-items: center; margin-top: 12px; }
+@media (max-width: 1000px) { .wx { grid-template-columns: 1fr; } }
+.wx .big { font-size: 38px; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.wx .big.now { color: #ffd0d0; text-shadow: 0 0 24px rgba(239,107,107,0.6); }
+.wx .small { font-size: 13px; color: var(--text-2); margin-top: 6px; }
+.contrib { display: flex; flex-direction: column; gap: 9px; }
+.crow { display: grid; grid-template-columns: 150px 1fr 56px; gap: 10px; align-items: center; font-size: 12.5px; }
+.crow .lab { color: var(--text-2); font-weight: 600; }
+.crow .val { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+.track { position: relative; height: 12px; background: rgba(255,255,255,0.06); border-radius: 999px; }
+.track .mid { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--axis); }
+.track i { position: absolute; top: 0; bottom: 0; border-radius: 999px; transition: all .35s ease; }
+.pill2 { display: inline-flex; gap: 6px; align-items: center; font-size: 11.5px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
+  color: #c9b8ff; background: rgba(167,139,250,0.14); border: 1px solid rgba(167,139,250,0.45); padding: 3px 10px; border-radius: 999px; }
+.vs { display: flex; gap: 12px; }
+.vs .fact { flex: 1; }
+.wxnote { font-size: 12px; color: var(--text-3); margin-top: 12px; }
+
 /* charts */
 .chart-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
 .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--text-2); }
@@ -271,6 +290,15 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
     <div class="events" id="events"></div>
   </div>
 
+  <!-- weather-aware model (extension) -->
+  <div class="card span12" id="wxCard">
+    <div class="chart-head">
+      <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>Weather-aware forecast</h3>
+      <span class="pill2">Extension model</span>
+    </div>
+    <div id="wxBody"></div>
+  </div>
+
   <!-- charts -->
   <div class="card span12">
     <div class="chart-head">
@@ -328,6 +356,10 @@ const WATER_JUMP = 30;         // soil jump that marks a watering
 const NOTEBOOK_MAE = 1.91;     // cross-validated MAE from the AI notebook
 const POLL_MS = 20000;
 const SESSION_GAP_MIN = 10;    // a pause longer than this starts a new session
+// Weather-aware model, trained in seasonal_extension.ipynb (synthetic seasonal data):
+// drying speed (% per hour of greenhouse time) = intercept + temp, humidity and light effects
+const WX_MODEL = { intercept: 0.51, temp: 0.0361, hum: -0.0100, light: 0.0129 };
+const SIM_HOURS_PER_READING = 1;   // sketch v2: each reading = 1 hour of greenhouse time
 
 const SERIES = {
   temp:  { name: "Temperature", unit: "°C", color: "#d95926", dec: 1, sub: "DHT22 · field 1" },
@@ -562,6 +594,8 @@ function render() {
   lineChart("c-hum", { key: "hum", rows: A.rows, label: "Air humidity over time", color: SERIES.hum.color, points: P("hum"), xDomain: xd, yMin: 0, yMax: 100 });
   lineChart("c-light", { key: "light", rows: A.rows, label: "Light over time", color: SERIES.light.color, points: P("light"), xDomain: xd, yMin: 0, yMax: 100 });
 
+  renderWeather(A);
+
   // table view
   $("tbl").innerHTML = `<table><thead><tr><th>Time</th><th>Entry</th><th>Temp (°C)</th><th>Humidity (%)</th><th>Soil (%)</th><th>Light (%)</th><th>Cycle</th></tr></thead><tbody>${
     A.rows.slice().reverse().map(r => `<tr class="${r.anomaly ? "bad" : ""}"><td>${fmtTime(r.time)}</td><td>${r.id}</td><td>${fmt(r.temp, 1)}${r.anomaly ? " ⚠" : ""}</td><td>${fmt(r.hum, 1)}</td><td>${fmt(r.soil, 1)}</td><td>${fmt(r.light, 0)}</td><td>${r.cycle}</td></tr>`).join("")}</tbody></table>`;
@@ -578,6 +612,54 @@ function render() {
   events.forEach(e => state.seenEvents.add(e.startId));
   state.wasNow = fc.status === "now";
   state.first = false;
+}
+function renderWeather(A) {
+  const body = $("wxBody");
+  if (state.mode !== "live") {
+    body.innerHTML = `<div class="none" style="margin-top:12px">Runs in <b>Live ThingSpeak</b> mode with the weather-driven Wokwi sketch (version 2), where soil drying depends on temperature, humidity and light. The recorded run of 1 November used random drying, so this model does not apply to it.</div>`;
+    return;
+  }
+  const last = A.last, rows = A.rows;
+  const parts = [
+    ["Temperature", WX_MODEL.temp * last.temp, `${fmt(last.temp, 1)} °C`],
+    ["Humidity", WX_MODEL.hum * last.hum, `${fmt(last.hum, 1)} %`],
+    ["Light", WX_MODEL.light * last.light, `${fmt(last.light, 0)} %`],
+  ];
+  const rate = Math.max(0.02, WX_MODEL.intercept + parts.reduce((a, p) => a + p[1], 0));   // % per greenhouse hour
+  const gaps = rows.slice(1).map((r, i) => (r.time - rows[i].time) / 1000).filter(g => g > 0 && g < 120).sort((a, b) => a - b);
+  const secPerReading = gaps.length ? gaps[gaps.length >> 1] : 18;
+  const readingsLeft = (last.soil - THRESHOLD) / (rate * SIM_HOURS_PER_READING);
+  const now = last.soil < THRESHOLD;
+  const realMin = readingsLeft * secPerReading / 60, simHours = readingsLeft * SIM_HOURS_PER_READING;
+  // measured drying speed over the last 10 readings (skipped if a watering happened)
+  let measured = null;
+  const win = rows.slice(-11);
+  if (win.length === 11 && win.every((r, i) => i === 0 || r.soil - win[i - 1].soil <= WATER_JUMP)) {
+    measured = (win[0].soil - win[10].soil) / (10 * SIM_HOURS_PER_READING);
+  }
+  const maxAbs = 1.6;
+  const bar = v => { const w = Math.min(50, Math.abs(v) / maxAbs * 50); return v >= 0
+      ? `<i style="left:50%;width:${w}%;background:#eb6834"></i>` : `<i style="left:${50 - w}%;width:${w}%;background:#3987e5"></i>`; };
+  body.innerHTML = `<div class="wx">
+    <div>
+      <div class="eyebrow" style="color:#c9b8ff">Next watering</div>
+      <div class="big ${now ? "now" : ""}">${now ? "Water now" : realMin < 1 ? `Water in ${Math.max(1, Math.round(realMin * 60))} s` : `Water in ${Math.round(realMin)} min`}</div>
+      <div class="small">${now ? "Soil moisture is below 30 %." : `≈ ${fmt(simHours, 0)} h of greenhouse time, if the current weather continues`}</div>
+    </div>
+    <div>
+      <div class="small" style="margin:0 0 10px">Why the soil dries at this speed (% per greenhouse hour)</div>
+      <div class="contrib">
+        ${parts.map(p => `<div class="crow"><span class="lab">${p[0]} <span style="color:var(--text-3);font-weight:500">${p[2]}</span></span><div class="track"><span class="mid"></span>${bar(p[1])}</div><span class="val">${p[1] >= 0 ? "+" : "−"}${fmt(Math.abs(p[1]), 2)}</span></div>`).join("")}
+        <div class="crow"><span class="lab">Base</span><div class="track"><span class="mid"></span>${bar(WX_MODEL.intercept)}</div><span class="val">+${fmt(WX_MODEL.intercept, 2)}</span></div>
+      </div>
+      <div class="legend" style="margin-top:10px"><span><i class="sw pt" style="background:#eb6834;border-radius:3px"></i>speeds up drying</span><span><i class="sw pt" style="background:#3987e5;border-radius:3px"></i>slows it down</span></div>
+    </div>
+    <div class="vs">
+      <div class="fact"><b>${fmt(rate, 2)} %/h</b><span>predicted drying</span></div>
+      <div class="fact"><b>${measured === null ? "–" : fmt(measured, 2) + " %/h"}</b><span>measured, last 10 readings</span></div>
+    </div>
+  </div>
+  <div class="wxnote">Trained on our synthetic seasonal dataset (extension notebook). Each reading of the version 2 sketch stands for 1 hour of greenhouse time. The trend forecast above uses only the soil readings; this one uses the weather.</div>`;
 }
 function renderEmpty() {
   Object.keys(SERIES).forEach(k => { $(`k-${k}`).innerHTML = `<div class="name">${SERIES[k].name}</div><div class="none" style="margin-top:12px">Waiting for data</div>`; });
