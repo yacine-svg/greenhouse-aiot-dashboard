@@ -327,6 +327,7 @@ const LIMIT = 10;              // °C from the local median -> anomaly
 const WATER_JUMP = 30;         // soil jump that marks a watering
 const NOTEBOOK_MAE = 1.91;     // cross-validated MAE from the AI notebook
 const POLL_MS = 20000;
+const SESSION_GAP_MIN = 10;    // a pause longer than this starts a new session
 
 const SERIES = {
   temp:  { name: "Temperature", unit: "°C", color: "#d95926", dec: 1, sub: "DHT22 · field 1" },
@@ -642,8 +643,16 @@ async function fetchLive() {
     if (!json || !Array.isArray(json.feeds)) throw new Error("unexpected answer (private channel? add the Read API key)");
     const rows = parseThingSpeak(json.feeds);
     if (!rows.length) throw new Error("the channel has no complete readings yet");
-    state.data = rows;
-    $("liveMsg").textContent = `Connected to “${(json.channel && json.channel.name) || "channel " + id}”. Refreshes every 20 seconds.`;
+    // show only the current session: readings after the last pause longer than SESSION_GAP_MIN
+    let start = 0;
+    for (let i = 1; i < rows.length; i++) if (rows[i].time - rows[i - 1].time > SESSION_GAP_MIN * 60000) start = i;
+    const session = rows.slice(start);
+    state.data = session;
+    const ageMin = (Date.now() - session[session.length - 1].time.getTime()) / 60000;
+    const name = (json.channel && json.channel.name) || "channel " + id;
+    $("liveMsg").textContent = `Connected to “${name}”. Current session: ${session.length} readings since ${fmtShort(session[0].time)}`
+      + (start > 0 ? ` (${rows.length} in the channel)` : "")
+      + (ageMin > SESSION_GAP_MIN ? `. No new reading for ${Math.round(ageMin)} min: is the Wokwi simulation running?` : ". Refreshes every 20 seconds.");
     $("liveMsg").className = "msg";
     $("srcNote").textContent = `Live data from ThingSpeak channel ${id}`;
     setStatus("live", "Live · connected");
