@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Greenhouse AIoT Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap">
 <style>
 :root {
-  --bg: #0C1A15;
-  --surface: #10231B;
+  --bg: #0E1C16;
+  --surface: #12251C;
   --card: rgba(255,255,255,0.045);
   --card-border: rgba(255,255,255,0.10);
   --text: #EAF2EC;
@@ -17,65 +17,58 @@
   --text-3: #7C978A;
   --grid: rgba(255,255,255,0.07);
   --axis: rgba(255,255,255,0.18);
-  --brand: #4ADE80;
+  --brand: #8FD694;
   --temp: #d95926;
   --hum: #3987e5;
   --soil: #199e70;
   --light: #c98500;
   --critical: #ef6b6b;
   --warning: #f2a93b;
-  --good: #4ADE80;
+  --good: #8FD694;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { background: var(--bg); }
 body {
-  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   color: var(--text);
   min-height: 100vh;
-  background:
-    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(74,222,128,0.13), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 100% 10%, rgba(57,135,229,0.10), transparent 60%),
-    var(--bg);
+  background: linear-gradient(180deg, #132a1f 0, var(--bg) 520px);
 }
-body::before {
-  content: ""; position: fixed; inset: 0; pointer-events: none;
-  background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
-  background-size: 28px 28px;
-}
+
 .wrap { position: relative; max-width: 1440px; margin: 0 auto; padding: 24px 28px 40px; }
 
 /* ---------- header ---------- */
 header { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-bottom: 20px; }
 .logo { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center;
-  background: linear-gradient(145deg, rgba(74,222,128,0.30), rgba(74,222,128,0.06));
-  border: 1px solid rgba(74,222,128,0.45); box-shadow: 0 0 30px rgba(74,222,128,0.18); flex: none; }
+  background: linear-gradient(145deg, rgba(143,214,148,0.30), rgba(143,214,148,0.06));
+  border: 1px solid rgba(143,214,148,0.45); box-shadow: 0 0 30px rgba(143,214,148,0.18); flex: none; }
 .logo svg { width: 28px; height: 28px; }
 .titles h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.4px; }
 .titles p { font-size: 13.5px; color: var(--text-2); margin-top: 3px; }
 .spacer { flex: 1; }
 .tabs { display: flex; background: rgba(0,0,0,0.25); border: 1px solid var(--card-border); border-radius: 999px; padding: 4px; }
-.tabs button { border: 0; background: transparent; color: var(--text-2); font: 600 13.5px "Inter", system-ui, sans-serif;
+.tabs button { border: 0; background: transparent; color: var(--text-2); font: 600 13.5px "Schibsted Grotesk", system-ui, sans-serif;
   padding: 8px 18px; border-radius: 999px; cursor: pointer; transition: all .2s; }
 .tabs button.on { background: rgba(255,255,255,0.12); color: var(--text); }
 .status { display: flex; align-items: center; gap: 9px; padding: 8px 15px; border-radius: 999px;
   background: rgba(0,0,0,0.25); border: 1px solid var(--card-border); font-size: 13px; font-weight: 600; white-space: nowrap; }
-.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 0 rgba(74,222,128,0.6); animation: pulse 1.8s infinite; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--brand); box-shadow: 0 0 0 0 rgba(143,214,148,0.6); animation: pulse 1.8s infinite; }
 .dot.idle { background: var(--text-3); animation: none; }
 .dot.err { background: var(--critical); animation: none; }
-@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.55); } 70% { box-shadow: 0 0 0 10px rgba(74,222,128,0); } 100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); } }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(143,214,148,0.55); } 70% { box-shadow: 0 0 0 10px rgba(143,214,148,0); } 100% { box-shadow: 0 0 0 0 rgba(143,214,148,0); } }
 
 /* ---------- control bar ---------- */
 .controls { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 14px 18px; margin-bottom: 18px;
   background: var(--card); border: 1px solid var(--card-border); border-radius: 18px; backdrop-filter: blur(8px); }
-.btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(74,222,128,0.5); cursor: pointer;
-  background: linear-gradient(180deg, rgba(74,222,128,0.28), rgba(74,222,128,0.12)); color: var(--text);
-  font: 700 13.5px "Inter", system-ui, sans-serif; padding: 9px 16px; border-radius: 12px; transition: transform .1s, box-shadow .2s; }
-.btn:hover { box-shadow: 0 0 22px rgba(74,222,128,0.25); }
+.btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(143,214,148,0.5); cursor: pointer;
+  background: linear-gradient(180deg, rgba(143,214,148,0.28), rgba(143,214,148,0.12)); color: var(--text);
+  font: 700 13.5px "Schibsted Grotesk", system-ui, sans-serif; padding: 9px 16px; border-radius: 12px; transition: transform .1s, box-shadow .2s; }
+.btn:hover { box-shadow: 0 0 22px rgba(143,214,148,0.25); }
 .btn:active { transform: scale(0.97); }
 .btn svg { width: 16px; height: 16px; }
 .btn.ghost { border-color: var(--card-border); background: rgba(255,255,255,0.05); }
 select, input[type=text], input[type=password] { background: rgba(0,0,0,0.3); color: var(--text); border: 1px solid var(--card-border);
-  border-radius: 10px; padding: 8px 11px; font: 500 13.5px "Inter", system-ui, sans-serif; }
+  border-radius: 10px; padding: 8px 11px; font: 500 13.5px "Schibsted Grotesk", system-ui, sans-serif; }
 input[type=text], input[type=password] { width: 170px; }
 label.lbl { font-size: 12.5px; color: var(--text-2); font-weight: 600; }
 input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); height: 4px; }
@@ -87,14 +80,54 @@ input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); heigh
 
 /* ---------- grid ---------- */
 .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
-.card { background: var(--card); border: 1px solid var(--card-border); border-radius: 20px; padding: 18px 20px;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.28); position: relative; overflow: hidden; }
-.card h3 { font-size: 13px; font-weight: 700; color: var(--text-2); letter-spacing: 0.6px; text-transform: uppercase;
-  display: flex; align-items: center; gap: 8px; }
+.card { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 18px 20px; position: relative; overflow: hidden; }
+.card.focus { border-color: rgba(143,214,148,0.7); box-shadow: 0 0 0 3px rgba(143,214,148,0.18); transition: box-shadow .3s, border-color .3s; }
+.card h3 { font-size: 16px; font-weight: 650; color: var(--text); letter-spacing: -0.1px; display: flex; align-items: center; gap: 8px; }
 .span3 { grid-column: span 3; } .span4 { grid-column: span 4; } .span5 { grid-column: span 5; }
 .span6 { grid-column: span 6; } .span7 { grid-column: span 7; } .span8 { grid-column: span 8; } .span12 { grid-column: span 12; }
 @media (max-width: 1150px) { .span3 { grid-column: span 6; } .span4, .span5, .span7, .span8 { grid-column: span 12; } }
 @media (max-width: 680px) { .wrap { padding: 16px; } .span3, .span6 { grid-column: span 12; } .clock { text-align: left; } }
+
+/* stage: live greenhouse + sensor list */
+.stage { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr); gap: 0; border-radius: 26px; overflow: hidden;
+  border: 1px solid var(--card-border); background: rgba(255,255,255,0.03); }
+@media (max-width: 1000px) { .stage { grid-template-columns: 1fr; } }
+.scene { width: 100%; aspect-ratio: 640 / 300; display: block; background: #0d1b2a; }
+.scene svg { width: 100%; height: 100%; display: block; }
+.scene-copy { padding: 20px 26px 24px; display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (max-width: 680px) { .scene-copy { padding: 18px; } }
+.scene-copy .headline { margin: 2px 0 8px; font-size: 46px; }
+.scene-copy .facts { margin-top: 0; justify-content: flex-start; }
+.sensors { border-left: 1px solid var(--card-border); padding: 10px 0; display: flex; flex-direction: column; }
+@media (max-width: 1000px) { .sensors { border-left: 0; border-top: 1px solid var(--card-border); } }
+.sensors .cap { font-size: 14px; color: var(--text-2); padding: 10px 22px 6px; }
+.srow { all: unset; box-sizing: border-box; cursor: pointer; flex: 1; display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 4px 14px;
+  align-items: center; padding: 14px 22px; border-top: 1px solid rgba(255,255,255,0.06); position: relative; transition: background .2s; }
+.srow:hover { background: rgba(255,255,255,0.04); }
+.srow:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+.srow .ic { width: 40px; height: 40px; border-radius: 12px; grid-row: span 2; }
+.srow .name { font-size: 14.5px; font-weight: 600; }
+.srow .sub { font-size: 12px; color: var(--text-3); grid-column: 2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.srow .val { font-size: 30px; font-weight: 750; letter-spacing: -0.6px; font-variant-numeric: tabular-nums; text-align: right; line-height: 1; }
+.srow .val small { font-size: 14px; font-weight: 500; color: var(--text-2); margin-left: 2px; }
+.srow .meta { grid-column: 2 / 4; display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 4px; }
+.srow .delta { font-size: 12px; }
+.srow .spark { width: 110px; height: 30px; }
+.srow.flash::after { content: ""; position: absolute; inset: 0; background: rgba(143,214,148,0.12); animation: flash 1.1s ease forwards; pointer-events: none; }
+@keyframes flash { from { opacity: 1; } to { opacity: 0; } }
+.drop { animation: fall 0.9s linear infinite; }
+@keyframes fall { from { transform: translateY(0); opacity: 0.9; } to { transform: translateY(85px); opacity: 0; } }
+.pulse { animation: pulseo 1s ease-in-out infinite alternate; }
+@keyframes pulseo { from { opacity: 0.35; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .drop, .pulse, .dot, .headline.now { animation: none !important; } }
+.rangebar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 14px; color: var(--text-2); margin: 8px 0 -4px; }
+.rangebar .chip.on { background: rgba(143,214,148,0.16); border-color: rgba(143,214,148,0.6); }
+.timer { font-size: 13px; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.how { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr); gap: 26px; align-items: center; }
+@media (max-width: 900px) { .how { grid-template-columns: 1fr; } }
+.how img { width: 100%; height: auto; border-radius: 12px; display: block; }
+.how p { font-size: 14.5px; line-height: 1.65; color: var(--text-2); max-width: 46ch; }
+.how ol { margin: 12px 0 0 18px; color: var(--text-2); font-size: 14px; line-height: 1.8; }
 
 /* KPI cards */
 .kpi { display: flex; flex-direction: column; gap: 10px; min-height: 168px; }
@@ -113,7 +146,7 @@ input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); heigh
 .flag { white-space: nowrap; flex: none; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
 .flag.crit { background: rgba(239,107,107,0.16); color: #ffb3b3; border: 1px solid rgba(239,107,107,0.5); }
 .flag.warn { background: rgba(242,169,59,0.15); color: #ffd59a; border: 1px solid rgba(242,169,59,0.5); }
-.flag.ok { background: rgba(74,222,128,0.12); color: #a9f5c4; border: 1px solid rgba(74,222,128,0.4); }
+.flag.ok { background: rgba(143,214,148,0.12); color: #a9f5c4; border: 1px solid rgba(143,214,148,0.4); }
 .flag svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 
 /* forecast hero */
@@ -124,7 +157,7 @@ input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); heigh
 .gauge .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 .gauge .big { font-size: 42px; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
 .gauge .cap { font-size: 12.5px; color: var(--text-2); margin-top: 2px; }
-.eyebrow { font-size: 12.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--brand); }
+.eyebrow { font-size: 14px; font-weight: 600; color: var(--brand); }
 .headline { font-size: 50px; font-weight: 800; letter-spacing: -1.6px; line-height: 1.05; margin: 8px 0 10px; font-variant-numeric: tabular-nums; }
 .headline.now { color: #ffd0d0; text-shadow: 0 0 28px rgba(239,107,107,0.55); animation: glow 1.2s ease-in-out infinite alternate; }
 @keyframes glow { from { text-shadow: 0 0 10px rgba(239,107,107,0.35); } to { text-shadow: 0 0 34px rgba(239,107,107,0.8); } }
@@ -132,7 +165,7 @@ input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); heigh
 .facts { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
 .fact { background: rgba(0,0,0,0.22); border: 1px solid var(--card-border); border-radius: 12px; padding: 9px 13px; }
 .fact b { display: block; font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.fact span { font-size: 11.5px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 600; }
+.fact span { font-size: 12.5px; color: var(--text-3); font-weight: 500; }
 .progress { height: 10px; border-radius: 999px; background: rgba(255,255,255,0.07); overflow: hidden; margin-top: 4px; position: relative; }
 .progress i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; transition: width .35s ease;
   background: linear-gradient(90deg, #ef6b6b, #f2a93b 40%, #199e70 75%); }
@@ -154,8 +187,11 @@ input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); heigh
 @keyframes slidein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 /* weather-aware model card */
-.wx { display: grid; grid-template-columns: 1.1fr 1.3fr 1fr; gap: 26px; align-items: center; margin-top: 12px; }
+.wx { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 18px 26px; align-items: start; margin-top: 12px; }
+.wx .vs { grid-column: 1; }
 @media (max-width: 1000px) { .wx { grid-template-columns: 1fr; } }
+#apiBody .wx { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.3fr) minmax(0, 1fr); align-items: center; }
+@media (max-width: 1000px) { #apiBody .wx { grid-template-columns: 1fr; } }
 .wx .big { font-size: 38px; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; line-height: 1.1; }
 .wx .big.now { color: #ffd0d0; text-shadow: 0 0 24px rgba(239,107,107,0.6); }
 .wx .small { font-size: 13px; color: var(--text-2); margin-top: 6px; }
@@ -166,7 +202,7 @@ input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); heigh
 .track { position: relative; height: 12px; background: rgba(255,255,255,0.06); border-radius: 999px; }
 .track .mid { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--axis); }
 .track i { position: absolute; top: 0; bottom: 0; border-radius: 999px; transition: all .35s ease; }
-.pill2 { display: inline-flex; gap: 6px; align-items: center; font-size: 11.5px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
+.pill2 { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; font-weight: 600;
   color: #c9b8ff; background: rgba(167,139,250,0.14); border: 1px solid rgba(167,139,250,0.45); padding: 3px 10px; border-radius: 999px; }
 .vs { display: flex; gap: 12px; }
 .vs .fact { flex: 1; }
@@ -189,7 +225,7 @@ input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); heigh
 .slider input { width: 100%; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 18px; }
 .chip { border: 1px solid var(--card-border); background: rgba(255,255,255,0.05); color: var(--text); border-radius: 999px; padding: 6px 12px;
-  font: 600 12.5px "Inter", system-ui, sans-serif; cursor: pointer; }
+  font: 600 12.5px "Schibsted Grotesk", system-ui, sans-serif; cursor: pointer; }
 .chip:hover { border-color: rgba(167,139,250,0.6); }
 .calc { font-size: 13.5px; line-height: 1.9; color: var(--text-2); background: rgba(0,0,0,0.22); border: 1px solid var(--card-border);
   border-radius: 14px; padding: 12px 16px; margin-top: 14px; font-variant-numeric: tabular-nums; }
@@ -247,10 +283,10 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
 <div class="wrap">
 
 <header>
-  <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#4ADE80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></div>
+  <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#8FD694" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></div>
   <div class="titles">
-    <h1>Greenhouse AIoT Dashboard</h1>
-    <p>ESP32 (Wokwi) → ThingSpeak → AI module · smart agriculture</p>
+    <h1>Greenhouse monitor</h1>
+    <p>A simulated ESP32 sends readings to ThingSpeak; the AI predicts when to water</p>
   </div>
   <div class="spacer"></div>
   <div class="tabs" role="tablist">
@@ -258,7 +294,7 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
     <button id="tabLive" role="tab">Live ThingSpeak</button>
     <button id="tabWx" role="tab">Weather AI</button>
   </div>
-  <div class="status"><span id="statusDot" class="dot idle"></span><span id="statusText">Replay · paused</span></div>
+  <div class="status"><span id="statusDot" class="dot idle"></span><span id="statusText">Replay, paused</span></div>
 </header>
 
 <div class="controls" id="replayBar">
@@ -275,53 +311,50 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
   <label class="lbl" for="chKey">Read API key</label>
   <input type="password" id="chKey" placeholder="only for private channels">
   <button class="btn" id="connectBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg><span>Connect</span></button>
+  <button class="btn ghost hidden" id="refreshBtn"><span>Refresh now</span></button>
+  <span class="timer" id="liveTimer"></span>
   <span class="msg" id="liveMsg">Refreshes every 20 seconds.</span>
   <div class="spacer"></div>
   <div class="clock" id="liveClock"></div>
 </div>
 
 <div class="grid" id="dashGrid">
-  <!-- KPI cards -->
-  <div class="card kpi span3" id="k-temp"></div>
-  <div class="card kpi span3" id="k-hum"></div>
-  <div class="card kpi span3" id="k-soil"></div>
-  <div class="card kpi span3" id="k-light"></div>
-
-  <!-- forecast hero -->
-  <div class="card span7 hero-card" id="heroCard">
-    <div class="hero">
-      <div class="gauge">
-        <svg viewBox="0 0 120 120">
-          <defs><linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4ADE80"/><stop offset="1" stop-color="#199e70"/></linearGradient></defs>
-          <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="10"/>
-          <circle id="gaugeArc" cx="60" cy="60" r="50" fill="none" stroke="url(#gaugeGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 400" style="transition: stroke-dasharray .4s ease, stroke .3s"/>
-          <line id="gaugeTick" x1="60" y1="4" x2="60" y2="18" stroke="#ef6b6b" stroke-width="3" stroke-linecap="round"/>
-        </svg>
-        <div class="center"><div class="big" id="gaugeVal">–</div><div class="cap">soil moisture</div></div>
-      </div>
-      <div>
-        <div class="eyebrow">AI watering forecast</div>
-        <div class="headline" id="headline">–</div>
-        <div id="heroFlag"></div>
+  <!-- stage: live greenhouse illustration, forecast and sensor list -->
+  <section class="stage span12 hero-card" id="heroCard">
+    <div>
+      <div class="scene" id="scene"></div>
+      <div class="scene-copy">
+        <div>
+          <div class="eyebrow">AI watering forecast</div>
+          <div class="headline" id="headline">–</div>
+          <div id="heroFlag"></div>
+        </div>
         <div class="facts" id="facts"></div>
-        <div style="margin-top:16px">
+        <div>
           <div class="progress"><i id="prog"></i></div>
-          <div class="plabels"><span>30 % · water</span><span id="progLabel"></span><span>85 % · just watered</span></div>
+          <div class="plabels"><span>30 %, water</span><span id="progLabel"></span><span>85 %, just watered</span></div>
         </div>
       </div>
     </div>
-  </div>
+    <aside class="sensors" aria-label="Sensor readings">
+      <div class="cap">Sensors. Click one to see its chart.</div>
+      <button class="srow" id="k-temp" data-chart="c-temp"></button>
+      <button class="srow" id="k-hum" data-chart="c-hum"></button>
+      <button class="srow" id="k-soil" data-chart="c-soil"></button>
+      <button class="srow" id="k-light" data-chart="c-light"></button>
+    </aside>
+  </section>
 
   <!-- anomalies -->
-  <div class="card span5">
+  <div class="card span5" id="anomCard">
     <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef6b6b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>Anomaly detection</h3>
     <div class="anom-head"><span class="n" id="anomN">0</span><span class="t" id="anomT">events detected</span></div>
-    <div class="method">Rolling median of 21 readings (about 6 min) · flagged when temperature is more than 10 °C from it</div>
+    <div class="method">A reading is flagged when it is more than 10 °C away from the median of the 21 readings around it (about 6 minutes).</div>
     <div class="events" id="events"></div>
   </div>
 
   <!-- weather-aware model (extension) -->
-  <div class="card span12" id="wxCard">
+  <div class="card span7" id="wxCard">
     <div class="chart-head">
       <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>Weather-aware forecast</h3>
       <span class="pill2">Extension model</span>
@@ -330,6 +363,11 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
   </div>
 
   <!-- charts -->
+  <div class="span12 rangebar" id="rangebar">Charts show
+    <button class="chip on" data-r="all">all readings</button>
+    <button class="chip" data-r="15">the last 15 min</button>
+    <button class="chip" data-r="5">the last 5 min</button>
+  </div>
   <div class="card span12">
     <div class="chart-head">
       <h3>Soil moisture and forecast</h3>
@@ -359,6 +397,21 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
   <div class="card span6">
     <div class="chart-head"><h3>Light (%)</h3></div>
     <div class="chart" id="c-light"></div>
+  </div>
+  <div class="card span12">
+    <div class="how">
+      <img src="img/architecture.jpg" alt="System architecture: four sensors on an ESP32 in Wokwi send data over Wi-Fi to ThingSpeak, which feeds the AI module and this dashboard, with security across every layer" loading="lazy">
+      <div>
+        <h3>How the system works</h3>
+        <p>Every reading takes the same path, from the simulated greenhouse to this page.</p>
+        <ol>
+          <li>The ESP32 reads temperature, humidity, light and soil moisture.</li>
+          <li>It sends them to ThingSpeak about every 16 seconds, signed with its API key.</li>
+          <li>This dashboard reads ThingSpeak and runs the AI on each update.</li>
+          <li>You see the forecast, the alerts and the charts.</li>
+        </ol>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -448,7 +501,7 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
 </section>
 
 <footer>
-  <span>AIoT 2026/2027 · M2 SDIA · Dr KITOUNI Ilham · Mohammed Yassine Sekhri &amp; Amokrane Ahmed</span>
+  <span>Mohammed Yassine Sekhri and Amokrane Ahmed, M2 SDIA, AIoT course 2026/2027, supervised by Dr KITOUNI Ilham</span>
   <span id="srcNote"></span>
 </footer>
 </div>
@@ -472,10 +525,10 @@ const WX_MODEL = { intercept: 0.51, temp: 0.0361, hum: -0.0100, light: 0.0129 };
 const SIM_HOURS_PER_READING = 1;   // sketch v2: each reading = 1 hour of greenhouse time
 
 const SERIES = {
-  temp:  { name: "Temperature", unit: "°C", color: "#d95926", dec: 1, sub: "DHT22 · field 1" },
-  hum:   { name: "Humidity",    unit: "%",  color: "#3987e5", dec: 1, sub: "DHT22 · field 2" },
-  soil:  { name: "Soil moisture", unit: "%", color: "#199e70", dec: 1, sub: "Drying model · field 3" },
-  light: { name: "Light",       unit: "%",  color: "#c98500", dec: 0, sub: "Potentiometer · field 4" },
+  temp:  { name: "Temperature", unit: "°C", color: "#d95926", dec: 1, sub: "DHT22, field 1" },
+  hum:   { name: "Humidity",    unit: "%",  color: "#3987e5", dec: 1, sub: "DHT22, field 2" },
+  soil:  { name: "Soil moisture", unit: "%", color: "#199e70", dec: 1, sub: "Simulated, field 3" },
+  light: { name: "Light",       unit: "%",  color: "#c98500", dec: 0, sub: "Potentiometer, field 4" },
 };
 const ICONS = {
   temp: '<path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>',
@@ -494,7 +547,8 @@ const fmtShort = d => d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "
 const fmt = (v, dec) => (v === null || v === undefined || Number.isNaN(v)) ? "–" : v.toFixed(dec);
 
 /* ===== State ===== */
-const state = { mode: "replay", data: [], idx: 0, playing: false, timer: null, poll: null, seenEvents: new Set(), wasNow: false, first: true };
+const state = { mode: "replay", data: [], idx: 0, playing: false, timer: null, poll: null, seenEvents: new Set(), wasNow: false, first: true,
+                range: "all", prevVals: {}, nextPoll: 0 };
 
 function parseRecorded(rows) {
   return rows.map(r => ({ time: new Date(r[0]), id: r[1], temp: r[2], hum: r[3], soil: r[4], light: r[5] }));
@@ -593,7 +647,7 @@ function lineChart(id, opt) {
     if (opt.forecast) {
       const f = opt.forecast;
       s += `<line x1="${X(f.x0)}" y1="${Y(f.y0)}" x2="${X(f.x1)}" y2="${Y(f.y1)}" stroke="var(--text)" stroke-width="1.8" stroke-dasharray="6 5" opacity="0.9"/>`;
-      s += `<circle cx="${X(f.x1)}" cy="${Y(f.y1)}" r="7" fill="var(--critical)" stroke="var(--surface)" stroke-width="2"/>`;
+      if (!f.cut) s += `<circle cx="${X(f.x1)}" cy="${Y(f.y1)}" r="7" fill="var(--critical)" stroke="var(--surface)" stroke-width="2"/>`;
       const anchor = X(f.x1) > W - 150 ? "end" : "start", dx = anchor === "end" ? -12 : 12;
       s += `<text x="${X(f.x1) + dx}" y="${Y(f.y1) + 22}" text-anchor="${anchor}" font-size="12" font-weight="700" fill="var(--text)">${f.label}</text>`;
     }
@@ -635,30 +689,30 @@ function render() {
   const all = analyze(state.data);
   const xmax0 = state.mode === "replay" ? all.last.minute : last.minute;
 
-  // KPI cards
+  // sensor rows
   Object.keys(SERIES).forEach(k => {
     const S = SERIES[k], vals = A.rows.slice(-40).map(r => r[k]);
     const prev = A.rows.length > 10 ? A.rows[A.rows.length - 11][k] : null;
     const d = prev === null ? null : last[k] - prev;
     let flag = "";
-    if (k === "temp" && last.anomaly) flag = `<span class="flag crit">${svgIcon("warn")}Anomaly</span>`;
-    if (k === "soil") flag = last.soil < THRESHOLD ? `<span class="flag crit">${svgIcon("drop")}Dry</span>` : `<span class="flag ok">${svgIcon("check")}OK</span>`;
-    $(`k-${k}`).innerHTML = `<i class="bar" style="background:${S.color}"></i>
-      <div class="top"><div class="ic" style="background:${S.color}26">${svgIcon(k, S.color)}</div>
-      <div><div class="name">${S.name}</div><div class="sub">${S.sub}</div></div><div class="spacer"></div>${flag}</div>
-      <div class="row"><div><div class="val">${fmt(last[k], S.dec)}<small>${S.unit}</small></div>
-      <div class="delta">${d === null ? "&nbsp;" : Math.abs(d) < 0.05 ? "no change in 10 readings" : (d > 0 ? "▲ +" : "▼ ") + fmt(d, S.dec) + " " + S.unit + " in 10 readings"}</div></div>${spark(vals, S.color)}</div>`;
+    if (k === "temp" && last.anomaly) flag = ` <span class="flag crit">${svgIcon("warn")}Anomaly</span>`;
+    if (k === "soil" && last.soil < THRESHOLD) flag = ` <span class="flag crit">${svgIcon("drop")}Dry</span>`;
+    const el = $(`k-${k}`), before = state.prevVals[k];
+    el.innerHTML = `<div class="ic" style="background:${S.color}26">${svgIcon(k, S.color)}</div>
+      <div class="name">${S.name}${flag}</div>
+      <div class="val"><span class="num">${fmt(before === undefined ? last[k] : before, S.dec)}</span><small>${S.unit}</small></div>
+      <div class="sub">${S.sub}</div>
+      <div class="meta"><span class="delta">${d === null ? "&nbsp;" : Math.abs(d) < 0.05 ? "no change in 10 readings" : (d > 0 ? "▲ +" : "▼ ") + fmt(d, S.dec) + " " + S.unit + " in 10 readings"}</span>${spark(vals, S.color)}</div>`;
+    el.setAttribute("aria-label", `${S.name} ${fmt(last[k], S.dec)} ${S.unit}. Show its chart.`);
+    if (before !== undefined && Math.abs(before - last[k]) > 1e-9) {
+      countUp(el.querySelector(".num"), before, last[k], S.dec);
+      el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash");
+    }
+    state.prevVals[k] = last[k];
   });
 
   // forecast hero
-  const pct = Math.max(0, Math.min(1, last.soil / 100));
-  const C = 2 * Math.PI * 50;
-  $("gaugeArc").setAttribute("stroke-dasharray", `${(pct * C).toFixed(1)} ${C.toFixed(1)}`);
-  $("gaugeArc").setAttribute("stroke", last.soil < THRESHOLD ? "#ef6b6b" : "url(#gaugeGrad)");
-  const ang = THRESHOLD / 100 * 2 * Math.PI;
-  $("gaugeTick").setAttribute("x1", 60 + 44 * Math.cos(ang)); $("gaugeTick").setAttribute("y1", 60 + 44 * Math.sin(ang));
-  $("gaugeTick").setAttribute("x2", 60 + 58 * Math.cos(ang)); $("gaugeTick").setAttribute("y2", 60 + 58 * Math.sin(ang));
-  $("gaugeVal").textContent = fmt(last.soil, 1) + "%";
+  renderScene(last, fc);
   const hl = $("headline"), card = $("heroCard");
   hl.classList.remove("now"); card.classList.remove("now");
   let flag = "";
@@ -683,7 +737,7 @@ function render() {
   $("anomN").textContent = events.length;
   $("anomT").textContent = events.length === 1 ? "event detected" : "events detected";
   $("events").innerHTML = events.length ? events.slice().reverse().map(e => `<div class="ev"><div class="ic">${svgIcon("warn")}</div>
-      <div><b>${e.type}</b><p>${fmtShort(e.time)} · ${e.n} reading${e.n > 1 ? "s" : ""}${e.ongoing ? " · ongoing" : ""} · local median ${fmt(e.median, 1)} °C</p></div>
+      <div><b>${e.type}</b><p>${fmtShort(e.time)}, ${e.n} reading${e.n > 1 ? "s" : ""}${e.ongoing ? ", still going" : ""}, local median ${fmt(e.median, 1)} °C</p></div>
       <div class="v">${fmt(e.peak, 1)} °C</div></div>`).join("")
     : `<div class="none">No anomaly so far. Every temperature reading is within 10 °C of its local median.</div>`;
 
@@ -694,15 +748,18 @@ function render() {
     xmax = Math.max(xmax, x1 + 1);
     fcLine = { x0: last.minute, y0: fc.intercept + fc.slope * last.t, x1, y1: THRESHOLD, label: `water at ${fmtShort(new Date(last.time.getTime() + fc.left * 60000))}` };
   }
-  const xd = [0, Math.max(1, xmax)];
-  const P = k => A.rows.map(r => [r.minute, r[k]]);
+  const x0 = state.range === "all" ? 0 : Math.max(0, last.minute - Number(state.range));
+  const xd = [x0, Math.max(x0 + 1, state.range === "all" ? xmax : Math.max(last.minute, fcLine ? Math.min(fcLine.x1, last.minute + Number(state.range)) : last.minute))];
+  if (fcLine && fcLine.x1 > xd[1]) { fcLine.y1 = fcLine.y0 + (THRESHOLD - fcLine.y0) * (xd[1] - fcLine.x0) / (fcLine.x1 - fcLine.x0); fcLine.x1 = xd[1]; fcLine.cut = true; }
+  const vis = A.rows.filter(r => r.minute >= x0);
+  const P = k => vis.map(r => [r.minute, r[k]]);
   const rng = k => { const v = (state.mode === "replay" ? all.rows : A.rows).map(r => r[k]); return [Math.min(...v), Math.max(...v)]; };
   const [tmin, tmax] = rng("temp");
-  lineChart("c-soil", { key: "soil", rows: A.rows, label: "Soil moisture over time with the AI forecast", color: SERIES.soil.color, points: P("soil"), xDomain: xd, yMin: 0, yMax: 100, threshold: THRESHOLD, forecast: fcLine });
-  lineChart("c-temp", { key: "temp", rows: A.rows, label: "Temperature over time with anomalies", color: SERIES.temp.color, points: P("temp"), xDomain: xd, yMin: Math.min(0, tmin), yMax: tmax + 2,
-    median: A.rows.map(r => [r.minute, r.median]), flags: A.rows.filter(r => r.anomaly).map(r => [r.minute, r.temp]) });
-  lineChart("c-hum", { key: "hum", rows: A.rows, label: "Air humidity over time", color: SERIES.hum.color, points: P("hum"), xDomain: xd, yMin: 0, yMax: 100 });
-  lineChart("c-light", { key: "light", rows: A.rows, label: "Light over time", color: SERIES.light.color, points: P("light"), xDomain: xd, yMin: 0, yMax: 100 });
+  lineChart("c-soil", { key: "soil", rows: vis, label: "Soil moisture over time with the AI forecast", color: SERIES.soil.color, points: P("soil"), xDomain: xd, yMin: 0, yMax: 100, threshold: THRESHOLD, forecast: fcLine });
+  lineChart("c-temp", { key: "temp", rows: vis, label: "Temperature over time with anomalies", color: SERIES.temp.color, points: P("temp"), xDomain: xd, yMin: Math.min(0, tmin), yMax: tmax + 2,
+    median: vis.map(r => [r.minute, r.median]), flags: vis.filter(r => r.anomaly).map(r => [r.minute, r.temp]) });
+  lineChart("c-hum", { key: "hum", rows: vis, label: "Air humidity over time", color: SERIES.hum.color, points: P("hum"), xDomain: xd, yMin: 0, yMax: 100 });
+  lineChart("c-light", { key: "light", rows: vis, label: "Light over time", color: SERIES.light.color, points: P("light"), xDomain: xd, yMin: 0, yMax: 100 });
 
   renderWeather(A);
 
@@ -771,6 +828,76 @@ function renderWeather(A) {
   </div>
   <div class="wxnote">Trained on our synthetic seasonal dataset (extension notebook). Each reading of the version 2 sketch stands for 1 hour of greenhouse time. The trend forecast above uses only the soil readings; this one uses the weather.</div>`;
 }
+function countUp(el, from, to, dec) {
+  if (!el) return;
+  if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) { el.textContent = fmt(to, dec); return; }
+  const t0 = performance.now(), dur = 450;
+  const step = now => { const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = fmt(from + (to - from) * e, dec); if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+const mix = (a, b, t) => { const pa = a.match(/\w\w/g).map(h => parseInt(h, 16)), pb = b.match(/\w\w/g).map(h => parseInt(h, 16));
+  return "#" + pa.map((v, i) => Math.round(v + (pb[i] - v) * Math.max(0, Math.min(1, t))).toString(16).padStart(2, "0")).join(""); };
+function renderScene(r, fc) {
+  const light = Math.max(0, Math.min(100, r.light)) / 100, soil = r.soil, temp = r.temp, hum = Math.max(0, Math.min(100, r.hum));
+  const night = light < 0.05, waterNow = fc.status === "now" || soil < THRESHOLD;
+  const sky1 = mix("0b1626", "5f9fb8", light), sky2 = mix("16263a", "b7d9de", light);
+  const health = Math.max(0, Math.min(1, (soil - 25) / 30));               // 0 = dry, 1 = healthy
+  const leaf = mix("b49a3c", "4f9d4a", health), leaf2 = mix("8f7a2e", "3d8a3f", health);
+  const droop = (1 - health) * 26;                                          // degrees
+  const soilCol = mix("8b6a45", "3b2716", soil / 85);
+  const sunY = 210 - light * 160;
+  const tFill = Math.max(0, Math.min(1, (temp + 5) / 50));
+  let stars = "";
+  if (night) [[40, 30], [90, 60], [150, 22], [230, 48], [330, 26], [400, 58], [470, 30], [560, 52], [600, 24], [300, 70]].forEach(([x, y]) => { stars += `<circle cx="${x}" cy="${y}" r="1.4" fill="#dfe8f5" opacity="0.8"/>`; });
+  const plant = (x, scale) => {
+    const h = 70 * scale, lean = droop * (x % 2 ? 1 : -1);
+    return `<g transform="translate(${x} 222) rotate(${lean * 0.25})">
+      <path d="M0 0 C 2 ${-h * 0.4}, ${-2 + lean * 0.4} ${-h * 0.75}, ${lean * 0.5} ${-h}" stroke="${leaf2}" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <ellipse cx="${-14}" cy="${-h * 0.45}" rx="16" ry="7" fill="${leaf}" transform="rotate(${-25 + droop} ${-14} ${-h * 0.45})"/>
+      <ellipse cx="${14}" cy="${-h * 0.62}" rx="16" ry="7" fill="${leaf2}" transform="rotate(${25 - droop} ${14} ${-h * 0.62})"/>
+      <ellipse cx="${lean * 0.5 - 10}" cy="${-h - 2}" rx="13" ry="6" fill="${leaf}" transform="rotate(${-35 + droop * 1.4} ${lean * 0.5 - 10} ${-h - 2})"/>
+      <ellipse cx="${lean * 0.5 + 10}" cy="${-h + 4}" rx="12" ry="5.5" fill="${leaf2}" transform="rotate(${35 - droop * 1.4} ${lean * 0.5 + 10} ${-h + 4})"/>
+    </g>`;
+  };
+  let drops = "";
+  if (waterNow) [140, 200, 260, 320, 380].forEach((x, i) => { drops += `<circle class="drop" cx="${x}" cy="128" r="2.6" fill="#7fbcf0" style="animation-delay:${(i * 0.17).toFixed(2)}s"/>`; });
+  const anomaly = !!r.anomaly;
+  $("scene").innerHTML = `<svg viewBox="0 0 640 300" role="img" aria-label="Greenhouse illustration: ${night ? "night" : "daylight " + Math.round(light * 100) + " %"}, ${fmt(temp, 1)} °C, humidity ${fmt(hum, 0)} %, soil moisture ${fmt(soil, 1)} %${waterNow ? ", needs water" : ""}${anomaly ? ", temperature anomaly" : ""}">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky1}"/><stop offset="1" stop-color="${sky2}"/></linearGradient>
+      <radialGradient id="sunGlow"><stop offset="0" stop-color="#f6d06b" stop-opacity="0.55"/><stop offset="1" stop-color="#f6d06b" stop-opacity="0"/></radialGradient>
+      <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff" stop-opacity="0.13"/><stop offset="1" stop-color="#ffffff" stop-opacity="0.03"/></linearGradient>
+    </defs>
+    <rect width="640" height="300" fill="url(#sky)"/>
+    ${stars}
+    ${night ? `<g transform="translate(540 64)"><circle r="17" fill="#e4ebf3"/><circle cx="7" cy="-5" r="15" fill="${sky1}"/></g>`
+            : `<circle cx="540" cy="${sunY}" r="60" fill="url(#sunGlow)"/><circle cx="540" cy="${sunY}" r="21" fill="#f4c654"/>`}
+    <path d="M0 252 Q 160 236 320 248 T 640 244 V300 H0 Z" fill="#20352a"/>
+    <rect y="262" width="640" height="38" fill="#2a1d14"/>
+    <!-- greenhouse -->
+    <path d="M90 252 V150 Q 270 52 450 150 V252 Z" fill="url(#glass)"/>
+    <rect x="96" y="${150 + (1 - hum / 100) * 100}" width="348" height="${(hum / 100) * 100}" fill="#cfe3ea" opacity="${(hum / 100 * 0.14).toFixed(3)}"/>
+    <rect x="104" y="222" width="332" height="30" rx="4" fill="${soilCol}"/>
+    <rect x="104" y="222" width="332" height="4" rx="2" fill="#000" opacity="0.15"/>
+    ${plant(150, 0.95)}${plant(215, 1.1)}${plant(280, 1)}${plant(345, 1.15)}
+    <line x1="110" y1="124" x2="430" y2="124" stroke="#9cb4bf" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+    ${[140, 200, 260, 320, 380].map(x => `<rect x="${x - 2}" y="124" width="4" height="5" fill="#9cb4bf"/>`).join("")}
+    ${drops}
+    <path d="M90 252 V150 Q 270 52 450 150 V252" fill="none" stroke="#d9ebe4" stroke-opacity="0.6" stroke-width="2.4"/>
+    ${[150, 210, 270, 330, 390].map(x => { const top = 150 - (1 - Math.pow((x - 270) / 180, 2)) * 98; return `<line x1="${x}" y1="${top.toFixed(1)}" x2="${x}" y2="252" stroke="#d9ebe4" stroke-opacity="0.22" stroke-width="1.4"/>`; }).join("")}
+    <line x1="90" y1="186" x2="450" y2="186" stroke="#d9ebe4" stroke-opacity="0.18" stroke-width="1.4"/>
+    <!-- thermometer -->
+    <g transform="translate(412 150)">
+      <rect x="-6" y="0" width="12" height="58" rx="6" fill="#0e1c16" stroke="#d9ebe4" stroke-opacity="0.7" stroke-width="1.5"/>
+      <rect x="-3" y="${(4 + (1 - tFill) * 50).toFixed(1)}" width="6" height="${(tFill * 50 + 2).toFixed(1)}" rx="3" fill="${anomaly ? "#ef6b6b" : "#e07a3f"}"/>
+      <circle cx="0" cy="64" r="9" fill="${anomaly ? "#ef6b6b" : "#e07a3f"}" stroke="#d9ebe4" stroke-opacity="0.7" stroke-width="1.5"/>
+      ${anomaly ? `<circle class="pulse" cx="0" cy="64" r="17" fill="none" stroke="#ef6b6b" stroke-width="2.5"/>` : ""}
+    </g>
+    <text x="104" y="284" font-size="13" fill="#d8c8b4" font-family="Schibsted Grotesk, system-ui, sans-serif">Soil ${fmt(soil, 1)} %</text>
+    <text x="398" y="140" font-size="13" fill="#e8f0ec" text-anchor="end" font-family="Schibsted Grotesk, system-ui, sans-serif">${fmt(temp, 1)} °C</text>
+  </svg>`;
+}
 function renderEmpty() {
   Object.keys(SERIES).forEach(k => { $(`k-${k}`).innerHTML = `<div class="name">${SERIES[k].name}</div><div class="none" style="margin-top:12px">Waiting for data</div>`; });
 }
@@ -788,13 +915,13 @@ function setStatus(kind, text) { $("statusDot").className = "dot" + (kind === "i
 function stopPlay() {
   state.playing = false; clearInterval(state.timer);
   $("playBtn").innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg><span>Play</span>`;
-  if (state.mode === "replay") setStatus("idle", "Replay · paused");
+  if (state.mode === "replay") setStatus("idle", "Replay, paused");
 }
 function startPlay() {
   if (state.idx >= state.data.length - 1) { state.idx = 0; state.seenEvents.clear(); state.wasNow = false; state.first = true; }
   state.playing = true;
   $("playBtn").innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg><span>Pause</span>`;
-  setStatus("live", "Replay · playing");
+  setStatus("live", "Replay, playing");
   const step = () => {
     if (state.idx >= state.data.length - 1) { stopPlay(); return; }
     state.idx++; $("scrub").value = state.idx; render();
@@ -828,7 +955,7 @@ function enterReplay() {
   state.idx = state.data.length - 1; $("scrub").value = state.idx;
   state.seenEvents.clear(); state.first = true;
   $("srcNote").textContent = `Recorded run: ${state.data.length} readings sent by the simulated ESP32 to ThingSpeak on 1 November 2026`;
-  setStatus("idle", "Replay · paused"); render();
+  setStatus("idle", "Replay, paused"); render();
 }
 
 /* ===== Live ThingSpeak ===== */
@@ -855,27 +982,51 @@ async function fetchLive() {
       + (ageMin > SESSION_GAP_MIN ? `. No new reading for ${Math.round(ageMin)} min: is the Wokwi simulation running?` : ". Refreshes every 20 seconds.");
     $("liveMsg").className = "msg";
     $("srcNote").textContent = `Live data from ThingSpeak channel ${id}`;
-    setStatus("live", "Live · connected");
+    setStatus("live", "Live, connected");
     render();
   } catch (err) {
     $("liveMsg").textContent = `Could not read the channel: ${err.message}. Check the channel ID and Read API key.`;
     $("liveMsg").className = "msg err";
-    setStatus("err", "Live · error");
+    setStatus("err", "Live, error");
   }
 }
 function enterLive() {
   stopPlay(); state.mode = "live";
   showView("tabLive");
   try { const saved = localStorage.getItem("greenhouse.channel"); if (saved && !$("chId").value) $("chId").value = saved; } catch (e) {}
-  setStatus("idle", "Live · not connected");
+  setStatus("idle", "Live, not connected");
 }
 $("connectBtn").onclick = () => {
   try { localStorage.setItem("greenhouse.channel", $("chId").value.trim()); } catch (e) {}
   state.seenEvents.clear(); state.first = true; state.wasNow = false;
-  clearInterval(state.poll); fetchLive(); state.poll = setInterval(fetchLive, POLL_MS);
+  clearInterval(state.poll); fetchLive(); state.nextPoll = Date.now() + POLL_MS;
+  state.poll = setInterval(() => { fetchLive(); state.nextPoll = Date.now() + POLL_MS; }, POLL_MS);
+  $("refreshBtn").classList.remove("hidden");
 };
 $("tabReplay").onclick = enterReplay;
 $("tabLive").onclick = enterLive;
+
+document.querySelectorAll(".srow").forEach(b => b.addEventListener("click", () => {
+  const card = $(b.dataset.chart).closest(".card");
+  card.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
+  card.classList.add("focus"); setTimeout(() => card.classList.remove("focus"), 1600);
+}));
+$("rangebar").addEventListener("click", e => {
+  const c = e.target.closest(".chip"); if (!c) return;
+  state.range = c.dataset.r;
+  document.querySelectorAll("#rangebar .chip").forEach(x => x.classList.toggle("on", x === c));
+  if (state.data.length) render();
+});
+setInterval(() => {
+  if (state.mode !== "live" || !state.poll) { $("liveTimer").textContent = ""; return; }
+  const sec = Math.max(0, Math.ceil((state.nextPoll - Date.now()) / 1000));
+  $("liveTimer").textContent = `Next update in ${sec} s`;
+}, 500);
+$("refreshBtn").onclick = () => { clearInterval(state.poll); fetchLive(); state.nextPoll = Date.now() + POLL_MS; state.poll = setInterval(() => { fetchLive(); state.nextPoll = Date.now() + POLL_MS; }, POLL_MS); };
+document.addEventListener("keydown", e => {
+  if (e.code !== "Space" || state.mode !== "replay" || /INPUT|SELECT|TEXTAREA|BUTTON/.test(e.target.tagName)) return;
+  e.preventDefault(); state.playing ? stopPlay() : startPlay();
+});
 
 /* ===== Weather AI page ===== */
 const FIXED_RATE = 0.78;   // time-only model from the extension notebook, % per hour
@@ -885,7 +1036,7 @@ const PRESETS = [
 ];
 function enterWeather() {
   stopPlay(); clearInterval(state.poll); state.mode = "weather";
-  showView("tabWx"); setStatus("idle", "Weather AI · simulator"); renderSim();
+  showView("tabWx"); setStatus("idle", "Weather AI, simulator"); renderSim();
   if (!apiData) fetchWeather();      // load the real forecast the first time
 }
 function renderSim() {
