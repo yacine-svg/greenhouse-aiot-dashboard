@@ -35,7 +35,23 @@ body {
   background: linear-gradient(180deg, #132a1f 0, var(--bg) 520px);
 }
 
-.wrap { position: relative; max-width: 1440px; margin: 0 auto; padding: 24px 28px 40px; }
+/* full-width layout: no empty bands left and right on wide screens */
+.wrap { position: relative; width: 100%; max-width: none; margin: 0; padding: 24px clamp(16px, 2.4vw, 56px) 40px; }
+
+/* Lenis smooth scroll (recommended base rules) */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* scroll-reveal for cards */
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+/* scroll progress bar */
+#scrollbar { position: fixed; left: 0; top: 0; height: 3px; width: 100%; transform-origin: 0 50%; transform: scaleX(0); z-index: 60;
+  background: linear-gradient(90deg, #199e70, #8FD694); pointer-events: none; }
 
 /* ---------- header ---------- */
 header { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-bottom: 20px; }
@@ -85,6 +101,9 @@ input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); heigh
 .card h3 { font-size: 16px; font-weight: 650; color: var(--text); letter-spacing: -0.1px; display: flex; align-items: center; gap: 8px; }
 .span3 { grid-column: span 3; } .span4 { grid-column: span 4; } .span5 { grid-column: span 5; }
 .span6 { grid-column: span 6; } .span7 { grid-column: span 7; } .span8 { grid-column: span 8; } .span12 { grid-column: span 12; }
+/* wide screens: put temperature, humidity and light side by side so the width is used */
+@media (min-width: 1500px) { .card.t3 { grid-column: span 4; } .chart.tall { height: 340px; } }
+@media (min-width: 1900px) { .grid { gap: 22px; } .card { padding: 22px 26px; } }
 @media (max-width: 1150px) { .span3 { grid-column: span 6; } .span4, .span5, .span7, .span8 { grid-column: span 12; } }
 @media (max-width: 680px) { .wrap { padding: 16px; } .span3, .span6 { grid-column: span 12; } .clock { text-align: left; } }
 
@@ -350,7 +369,7 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
     <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef6b6b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>Anomaly detection</h3>
     <div class="anom-head"><span class="n" id="anomN">0</span><span class="t" id="anomT">events detected</span></div>
     <div class="method">A reading is flagged when it is more than 10 °C away from the median of the 21 readings around it (about 6 minutes).</div>
-    <div class="events" id="events"></div>
+    <div class="events" id="events" data-lenis-prevent></div>
   </div>
 
   <!-- weather-aware model (extension) -->
@@ -379,7 +398,7 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
     </div>
     <div class="chart tall" id="c-soil"></div>
   </div>
-  <div class="card span12">
+  <div class="card span12 t3">
     <div class="chart-head">
       <h3>Temperature</h3>
       <div class="legend">
@@ -390,11 +409,11 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
     </div>
     <div class="chart" id="c-temp"></div>
   </div>
-  <div class="card span6">
+  <div class="card span6 t3">
     <div class="chart-head"><h3>Air humidity (%)</h3></div>
     <div class="chart" id="c-hum"></div>
   </div>
-  <div class="card span6">
+  <div class="card span6 t3">
     <div class="chart-head"><h3>Light (%)</h3></div>
     <div class="chart" id="c-light"></div>
   </div>
@@ -417,7 +436,7 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
 
 <details class="table card" id="dashTable" style="padding:14px 18px">
   <summary>Show the data table</summary>
-  <div class="tbl" id="tbl"></div>
+  <div class="tbl" id="tbl" data-lenis-prevent></div>
 </details>
 
 <section id="wxPage" class="hidden">
@@ -506,6 +525,32 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
 </footer>
 </div>
 <div class="toasts" id="toasts"></div>
+<div id="scrollbar"></div>
+
+<!-- Lenis: smooth, inertial scrolling (loads from CDN; the page works normally if it is blocked) -->
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
+<script>
+(function () {
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const bar = document.getElementById("scrollbar");
+  let lenis = null;
+  if (window.Lenis && !reduce) {
+    lenis = new Lenis({ lerp: 0.09, wheelMultiplier: 1, smoothWheel: true });
+    window.__lenis = lenis;
+    const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
+  }
+  const progress = () => { const m = document.documentElement.scrollHeight - innerHeight; bar.style.transform = "scaleX(" + (m > 0 ? scrollY / m : 0) + ")"; };
+  if (lenis) lenis.on("scroll", progress); else addEventListener("scroll", progress, { passive: true });
+  progress();
+  // cards fade in as they enter the viewport
+  const cards = document.querySelectorAll(".grid > .card, .grid > .stage, #dashTable");
+  if ("IntersectionObserver" in window && !reduce) {
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+    cards.forEach(c => { c.classList.add("reveal"); io.observe(c); });
+  }
+})();
+</script>
 
 <script>
 /* ===== Recorded data: ThingSpeak export (feeds.csv), 1 November 2026 ===== */
@@ -1008,7 +1053,7 @@ $("tabLive").onclick = enterLive;
 
 document.querySelectorAll(".srow").forEach(b => b.addEventListener("click", () => {
   const card = $(b.dataset.chart).closest(".card");
-  card.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
+  if (window.__lenis) window.__lenis.scrollTo(card, { offset: -(innerHeight - card.offsetHeight) / 2 }); else card.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
   card.classList.add("focus"); setTimeout(() => card.classList.remove("focus"), 1600);
 }));
 $("rangebar").addEventListener("click", e => {
@@ -1158,14 +1203,14 @@ function renderApi() {
     <div class="chart" style="height:230px;margin-top:14px">${svg}</div>
     <div class="legend" style="margin-top:6px"><span><i class="sw" style="border-color:#a78bfa"></i>Weather-aware model, hour by hour</span><span><i class="sw dash" style="border-color:var(--text-2)"></i>Time-only model (0.78 %/h): ${S0 > THRESHOLD ? (fixedH < 48 ? fixedH.toFixed(0) + " h" : (fixedH / 24).toFixed(1) + " days") : "now"}</span><span><i class="sw pt" style="background:rgba(57,135,229,0.35);border-radius:2px"></i>Night</span></div>
     <div class="wxnote">Outdoor forecast from Open-Meteo, with the greenhouse assumed ${warm} °C warmer than outside. Sunlight: 1000 W/m² of solar radiation counts as 100 % light. The soil dries fast in the sunny afternoons and almost stops at night; the time-only model cannot see this.</div>`;
-  $("useNow").onclick = () => { $("sT").value = Math.max(0, Math.min(45, curT)); $("sH").value = Math.round(Math.max(10, Math.min(100, c.hum))); $("sL").value = Math.round(curLight); renderSim(); window.scrollTo({ top: $("wxPage").offsetTop, behavior: "smooth" }); };
+  $("useNow").onclick = () => { $("sT").value = Math.max(0, Math.min(45, curT)); $("sH").value = Math.round(Math.max(10, Math.min(100, c.hum))); $("sL").value = Math.round(curLight); renderSim(); if (window.__lenis) window.__lenis.scrollTo($("wxPage").offsetTop); else window.scrollTo({ top: $("wxPage").offsetTop, behavior: "smooth" }); };
 }
 $("wxFetch").onclick = fetchWeather;
 $("city").onchange = () => apiData && fetchWeather();
 $("warm").onchange = renderApi;
 $("sS").addEventListener("input", renderApi);
 $("tabWx").onclick = enterWeather;
-$("goLive").onclick = () => { enterLive(); window.scrollTo({ top: 0, behavior: "smooth" }); };
+$("goLive").onclick = () => { enterLive(); if (window.__lenis) window.__lenis.scrollTo(0); else window.scrollTo({ top: 0, behavior: "smooth" }); };
 ["sT", "sH", "sL", "sS"].forEach(id => $(id).addEventListener("input", renderSim));
 $("presets").innerHTML = PRESETS.map((p, i) => `<button class="chip" data-i="${i}">${p[0]}</button>`).join("");
 $("presets").addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return;
