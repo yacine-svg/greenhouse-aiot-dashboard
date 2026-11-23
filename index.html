@@ -8,23 +8,24 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap">
 <style>
 :root {
-  --bg: #0E1C16;
-  --surface: #12251C;
-  --card: rgba(255,255,255,0.045);
-  --card-border: rgba(255,255,255,0.10);
-  --text: #EAF2EC;
-  --text-2: #A9BEB2;
-  --text-3: #7C978A;
-  --grid: rgba(255,255,255,0.07);
-  --axis: rgba(255,255,255,0.18);
-  --brand: #8FD694;
+  color-scheme: light;
+  --bg: #EDF2EF;
+  --surface: #FFFFFF;
+  --card: #FFFFFF;
+  --card-border: #D6E0DA;
+  --text: #14231B;
+  --text-2: #475B50;
+  --text-3: #63756A;
+  --grid: rgba(20,45,32,0.08);
+  --axis: rgba(20,45,32,0.28);
+  --brand: #2E7D46;
   --temp: #d95926;
   --hum: #3987e5;
   --soil: #199e70;
   --light: #c98500;
-  --critical: #ef6b6b;
-  --warning: #f2a93b;
-  --good: #8FD694;
+  --critical: #C8352E;
+  --warning: #B26B00;
+  --good: #2E7D46;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { background: var(--bg); }
@@ -32,7 +33,7 @@ body {
   font-family: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   color: var(--text);
   min-height: 100vh;
-  background: linear-gradient(180deg, #132a1f 0, var(--bg) 520px);
+  background: linear-gradient(180deg, #E1EBE5 0, var(--bg) 460px);
 }
 
 .wrap { position: relative; max-width: 1440px; margin: 0 auto; padding: 24px 28px 40px; }
@@ -144,9 +145,9 @@ input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); heigh
 .spark { width: 120px; height: 42px; flex: none; }
 .kpi .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
 .flag { white-space: nowrap; flex: none; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
-.flag.crit { background: rgba(239,107,107,0.16); color: #ffb3b3; border: 1px solid rgba(239,107,107,0.5); }
-.flag.warn { background: rgba(242,169,59,0.15); color: #ffd59a; border: 1px solid rgba(242,169,59,0.5); }
-.flag.ok { background: rgba(143,214,148,0.12); color: #a9f5c4; border: 1px solid rgba(143,214,148,0.4); }
+.flag.crit { background: rgba(239,107,107,0.16); color: #B4302A; border: 1px solid rgba(239,107,107,0.5); }
+.flag.warn { background: rgba(242,169,59,0.15); color: #8A5300; border: 1px solid rgba(242,169,59,0.5); }
+.flag.ok { background: rgba(143,214,148,0.12); color: #1F6B37; border: 1px solid rgba(143,214,148,0.4); }
 .flag svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 
 /* forecast hero */
@@ -159,7 +160,7 @@ input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); heigh
 .gauge .cap { font-size: 12.5px; color: var(--text-2); margin-top: 2px; }
 .eyebrow { font-size: 14px; font-weight: 600; color: var(--brand); }
 .headline { font-size: 50px; font-weight: 800; letter-spacing: -1.6px; line-height: 1.05; margin: 8px 0 10px; font-variant-numeric: tabular-nums; }
-.headline.now { color: #ffd0d0; text-shadow: 0 0 28px rgba(239,107,107,0.55); animation: glow 1.2s ease-in-out infinite alternate; }
+.headline.now { color: #C8352E; text-shadow: 0 0 28px rgba(239,107,107,0.55); animation: glow 1.2s ease-in-out infinite alternate; }
 @keyframes glow { from { text-shadow: 0 0 10px rgba(239,107,107,0.35); } to { text-shadow: 0 0 34px rgba(239,107,107,0.8); } }
 .hero-card.now { border-color: rgba(239,107,107,0.6); box-shadow: 0 0 0 1px rgba(239,107,107,0.25), 0 0 60px rgba(239,107,107,0.18); }
 .facts { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; }
@@ -180,7 +181,7 @@ input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); heigh
 .ev { display: grid; grid-template-columns: 36px 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; border-radius: 14px;
   background: rgba(239,107,107,0.08); border: 1px solid rgba(239,107,107,0.30); animation: slidein .4s ease; }
 .ev .ic { width: 36px; height: 36px; border-radius: 10px; background: rgba(239,107,107,0.18); }
-.ev .ic svg { stroke: #ffb3b3; width: 19px; height: 19px; }
+.ev .ic svg { stroke: #B4302A; width: 19px; height: 19px; }
 .ev b { font-size: 14px; } .ev p { font-size: 12px; color: var(--text-2); margin-top: 2px; }
 .ev .v { font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
 .none { font-size: 13.5px; color: var(--text-2); padding: 14px; border: 1px dashed var(--card-border); border-radius: 14px; }
@@ -193,7 +194,7 @@ input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); heigh
 #apiBody .wx { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.3fr) minmax(0, 1fr); align-items: center; }
 @media (max-width: 1000px) { #apiBody .wx { grid-template-columns: 1fr; } }
 .wx .big { font-size: 38px; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; line-height: 1.1; }
-.wx .big.now { color: #ffd0d0; text-shadow: 0 0 24px rgba(239,107,107,0.6); }
+.wx .big.now { color: #C8352E; text-shadow: 0 0 24px rgba(239,107,107,0.6); }
 .wx .small { font-size: 13px; color: var(--text-2); margin-top: 6px; }
 .contrib { display: flex; flex-direction: column; gap: 9px; }
 .crow { display: grid; grid-template-columns: 150px 1fr 56px; gap: 10px; align-items: center; font-size: 12.5px; }
@@ -203,7 +204,7 @@ input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); heigh
 .track .mid { position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--axis); }
 .track i { position: absolute; top: 0; bottom: 0; border-radius: 999px; transition: all .35s ease; }
 .pill2 { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; font-weight: 600;
-  color: #c9b8ff; background: rgba(167,139,250,0.14); border: 1px solid rgba(167,139,250,0.45); padding: 3px 10px; border-radius: 999px; }
+  color: #5B3FC4; background: rgba(167,139,250,0.14); border: 1px solid rgba(167,139,250,0.45); padding: 3px 10px; border-radius: 999px; }
 .vs { display: flex; gap: 12px; }
 .vs .fact { flex: 1; }
 .wxnote { font-size: 12px; color: var(--text-3); margin-top: 12px; }
@@ -216,7 +217,7 @@ input[type=range] { flex: 1; min-width: 180px; accent-color: var(--brand); heigh
 .step { background: rgba(0,0,0,0.22); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px 18px; }
 .step b { font-size: 15px; } .step p { font-size: 13.5px; margin-top: 6px; }
 .formula { font: 600 14px ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; background: rgba(167,139,250,0.10);
-  border: 1px solid rgba(167,139,250,0.35); color: #e4dcff; padding: 10px 12px; border-radius: 10px; margin-top: 10px; overflow-x: auto; white-space: nowrap; }
+  border: 1px solid rgba(167,139,250,0.35); color: #3F2E8C; padding: 10px 12px; border-radius: 10px; margin-top: 10px; overflow-x: auto; white-space: nowrap; }
 .sim { display: grid; grid-template-columns: 340px 1fr; gap: 28px; }
 @media (max-width: 980px) { .sim { grid-template-columns: 1fr; } }
 .slider { margin-bottom: 16px; }
@@ -261,7 +262,7 @@ table { width: 100%; border-collapse: collapse; font-size: 12.5px; font-variant-
 th, td { padding: 7px 12px; text-align: right; border-bottom: 1px solid rgba(255,255,255,0.05); }
 th { position: sticky; top: 0; background: #132a20; color: var(--text-2); font-weight: 600; }
 th:first-child, td:first-child { text-align: left; }
-tr.bad td { color: #ffb3b3; }
+tr.bad td { color: #B4302A; }
 
 /* toasts */
 .toasts { position: fixed; right: 22px; bottom: 22px; display: flex; flex-direction: column; gap: 10px; z-index: 50; }
@@ -272,11 +273,58 @@ tr.bad td { color: #ffb3b3; }
 .toast b { display: block; font-size: 14px; margin-bottom: 2px; }
 .toast .ic { width: 38px; height: 38px; border-radius: 11px; background: rgba(239,107,107,0.18); }
 .toast.water .ic { background: rgba(57,135,229,0.2); }
-.toast .ic svg { stroke: #ffb3b3; width: 20px; height: 20px; }
-.toast.water .ic svg { stroke: #9cc6ff; }
+.toast .ic svg { stroke: #B4302A; width: 20px; height: 20px; }
+.toast.water .ic svg { stroke: #2A6FC9; }
 @keyframes toastin { from { opacity: 0; transform: translateX(40px) scale(.95); } to { opacity: 1; transform: none; } }
 
 footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 12.5px; color: var(--text-3); }
+
+/* ===== light theme overrides ===== */
+.logo { background: #E4F0E7; border-color: #B9D6C1; box-shadow: none; }
+.logo svg { stroke: var(--brand); }
+.tabs { background: #E1E9E4; border-color: var(--card-border); }
+.tabs button.on { background: #FFFFFF; color: var(--text); box-shadow: 0 1px 2px rgba(20,45,32,0.12); }
+.status { background: #FFFFFF; }
+.dot { background: var(--brand); }
+.controls { background: #FFFFFF; backdrop-filter: none; }
+.btn { background: var(--brand); color: #FFFFFF; border-color: var(--brand); }
+.btn:hover { box-shadow: 0 2px 10px rgba(46,125,70,0.25); }
+.btn.ghost { background: #FFFFFF; color: var(--text); border-color: var(--card-border); }
+select, input[type=text], input[type=password] { background: #FFFFFF; color: var(--text); border-color: #C7D3CC; }
+input[type=range] { accent-color: var(--brand); }
+.card { background: #FFFFFF; box-shadow: 0 1px 2px rgba(20,45,32,0.05); }
+.card.focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(46,125,70,0.16); }
+.stage { background: #FFFFFF; box-shadow: 0 1px 3px rgba(20,45,32,0.06); }
+.srow { border-top-color: #E4EBE7; }
+.srow:hover { background: #F4F8F5; }
+.srow.flash::after { background: rgba(46,125,70,0.10); }
+.fact, .calc, .step { background: #F3F7F4; border-color: #DFE7E2; }
+.progress { background: #E3EAE6; }
+.flag.crit { background: rgba(200,53,46,0.09); color: #A4241D; border-color: rgba(200,53,46,0.4); }
+.flag.warn { background: rgba(178,107,0,0.1); color: #8A5300; border-color: rgba(178,107,0,0.4); }
+.flag.ok { background: rgba(46,125,70,0.1); color: #1F6B37; border-color: rgba(46,125,70,0.35); }
+.headline.now, .wx .big.now { color: var(--critical); text-shadow: none; animation: none; }
+.hero-card.now { border-color: rgba(200,53,46,0.55); box-shadow: 0 0 0 3px rgba(200,53,46,0.12); }
+.ev { background: rgba(200,53,46,0.06); border-color: rgba(200,53,46,0.28); }
+.ev .ic { background: rgba(200,53,46,0.12); }
+.ev .ic svg { stroke: var(--critical); }
+.track { background: #E6ECE8; }
+.tip { background: #FFFFFF; border-color: var(--card-border); box-shadow: 0 8px 20px rgba(20,45,32,0.14); }
+th { background: #F0F5F2; }
+tr.bad td { color: #A4241D; }
+.toast { background: #FFFFFF; color: var(--text); border-color: rgba(200,53,46,0.45); box-shadow: 0 12px 28px rgba(20,45,32,0.18); }
+.toast.water { border-color: rgba(57,135,229,0.5); box-shadow: 0 12px 28px rgba(20,45,32,0.18); }
+.toast .ic { background: rgba(200,53,46,0.1); }
+.toast .ic svg { stroke: var(--critical); }
+.toast.water .ic { background: rgba(57,135,229,0.12); }
+.toast.water .ic svg { stroke: #2A6FC9; }
+.pill2 { color: #5B3FC4; background: rgba(110,86,207,0.1); border-color: rgba(110,86,207,0.35); }
+.formula { background: rgba(110,86,207,0.07); border-color: rgba(110,86,207,0.3); color: #3F2E8C; }
+.chip { background: #FFFFFF; color: var(--text); border-color: var(--card-border); }
+.chip:hover { border-color: var(--brand); }
+.rangebar .chip.on { background: rgba(46,125,70,0.1); border-color: var(--brand); color: #1F6B37; }
+.none { border-color: #C9D5CE; }
+.figs figure { background: #F6F8F7; border: 1px solid #E1E8E4; }
 </style>
 </head>
 <body>
@@ -312,6 +360,7 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
   <input type="password" id="chKey" placeholder="only for private channels">
   <button class="btn" id="connectBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg><span>Connect</span></button>
   <button class="btn ghost hidden" id="refreshBtn"><span>Refresh now</span></button>
+  <button class="btn ghost hidden" id="newSessionBtn" title="Hide the readings so far and start from the next one"><span>New session</span></button>
   <span class="timer" id="liveTimer"></span>
   <span class="msg" id="liveMsg">Refreshes every 20 seconds.</span>
   <div class="spacer"></div>
@@ -356,7 +405,7 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
   <!-- weather-aware model (extension) -->
   <div class="card span7" id="wxCard">
     <div class="chart-head">
-      <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>Weather-aware forecast</h3>
+      <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6E56CF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>Weather-aware forecast</h3>
       <span class="pill2">Extension model</span>
     </div>
     <div id="wxBody"></div>
@@ -423,7 +472,7 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
 <section id="wxPage" class="hidden">
   <div class="grid">
     <div class="card span12 wxhero">
-      <div class="eyebrow" style="color:#c9b8ff">Weather-aware AI · extension</div>
+      <div class="eyebrow" style="color:#5B3FC4">Weather-aware AI · extension</div>
       <h2>How the weather changes when your plants need water</h2>
       <p>Soil dries faster on a hot, bright, dry day than on a cool, humid night. This model learned that relationship, so it can predict how fast the soil is drying from the temperature, humidity and light, and from that, when the plant will need water.</p>
       <div class="steps2">
@@ -445,20 +494,20 @@ footer { margin-top: 26px; display: flex; justify-content: space-between; gap: 1
           <div class="slider"><div class="top"><span>Soil moisture now</span><b id="vS"></b></div><input type="range" id="sS" min="30" max="85" step="0.5" value="54"></div>
         </div>
         <div>
-          <div class="eyebrow" style="color:#c9b8ff">Next watering</div>
+          <div class="eyebrow" style="color:#5B3FC4">Next watering</div>
           <div class="headline" id="simHead" style="font-size:44px">–</div>
           <div class="contrib" id="simContrib" style="max-width:640px"></div>
           <div class="legend" style="margin-top:10px"><span><i class="sw pt" style="background:#eb6834;border-radius:3px"></i>speeds up drying</span><span><i class="sw pt" style="background:#3987e5;border-radius:3px"></i>slows it down</span></div>
           <div class="calc" id="simCalc"></div>
           <div class="chart" id="simChart" style="height:210px;margin-top:14px"></div>
-          <div class="legend" style="margin-top:6px"><span><i class="sw" style="border-color:#a78bfa"></i>Weather-aware model</span><span><i class="sw dash" style="border-color:var(--text-2)"></i>Time-only model (one fixed speed: 0.78 %/h)</span><span><i class="sw dash" style="border-color:var(--critical)"></i>30 % threshold</span></div>
+          <div class="legend" style="margin-top:6px"><span><i class="sw" style="border-color:#6E56CF"></i>Weather-aware model</span><span><i class="sw dash" style="border-color:var(--text-2)"></i>Time-only model (one fixed speed: 0.78 %/h)</span><span><i class="sw dash" style="border-color:var(--critical)"></i>30 % threshold</span></div>
         </div>
       </div>
     </div>
 
     <div class="card span12" id="apiCard">
       <div class="chart-head">
-        <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>Real weather forecast</h3>
+        <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6E56CF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>Real weather forecast</h3>
         <span class="pill2">Open-Meteo API</span>
       </div>
       <div class="controls" style="margin:10px 0 14px;padding:12px 14px">
@@ -636,14 +685,15 @@ function lineChart(id, opt) {
   s += `<line x1="${m.l}" x2="${W - m.r}" y1="${m.t + ih}" y2="${m.t + ih}" stroke="var(--axis)"/>`;
   if (opt.threshold !== undefined) {
     s += `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(opt.threshold)}" y2="${Y(opt.threshold)}" stroke="var(--critical)" stroke-width="1.5" stroke-dasharray="6 5"/>`;
-    s += `<text x="${m.l + 8}" y="${Y(opt.threshold) - 6}" text-anchor="start" font-size="11" font-weight="600" fill="#ffb3b3">water below ${opt.threshold} %</text>`;
+    s += `<text x="${m.l + 8}" y="${Y(opt.threshold) - 6}" text-anchor="start" font-size="11" font-weight="600" fill="#B4302A">water below ${opt.threshold} %</text>`;
   }
   const pts = opt.points;
   if (pts.length) {
     const path = pts.map((p, i) => `${i ? "L" : "M"}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join("");
+    const linePath = pts.map((p, i) => `${i && p[0] - pts[i - 1][0] <= 1.5 ? "L" : "M"}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join("");
     s += `<path d="${path}L${X(pts[pts.length - 1][0]).toFixed(1)},${m.t + ih}L${X(pts[0][0]).toFixed(1)},${m.t + ih}Z" fill="url(#g-${id})"/>`;
     if (opt.median) s += `<path d="${opt.median.map((p, i) => `${i ? "L" : "M"}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join("")}" fill="none" stroke="var(--text-2)" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.8"/>`;
-    s += `<path d="${path}" fill="none" stroke="${opt.color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    s += `<path d="${linePath}" fill="none" stroke="${opt.color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`;
     if (opt.forecast) {
       const f = opt.forecast;
       s += `<line x1="${X(f.x0)}" y1="${Y(f.y0)}" x2="${X(f.x1)}" y2="${Y(f.y1)}" stroke="var(--text)" stroke-width="1.8" stroke-dasharray="6 5" opacity="0.9"/>`;
@@ -668,7 +718,7 @@ function lineChart(id, opt) {
     const r = opt.rows[best], px = X(r.minute);
     xh.setAttribute("x1", px); xh.setAttribute("x2", px); xh.setAttribute("opacity", 1);
     tip.style.left = (px / W * box.width) + "px"; tip.style.top = (Y(r[opt.key]) / H * box.height) + "px"; tip.style.opacity = 1;
-    tip.innerHTML = `<div class="muted">${fmtTime(r.time)} · entry ${r.id}</div><b>${fmt(r[opt.key], SERIES[opt.key].dec)} ${SERIES[opt.key].unit}</b>${r.anomaly && opt.key === "temp" ? ' <span style="color:#ffb3b3;font-weight:700">· anomaly</span>' : ""}`;
+    tip.innerHTML = `<div class="muted">${fmtTime(r.time)} · entry ${r.id}</div><b>${fmt(r[opt.key], SERIES[opt.key].dec)} ${SERIES[opt.key].unit}</b>${r.anomaly && opt.key === "temp" ? ' <span style="color:#B4302A;font-weight:700">· anomaly</span>' : ""}`;
   });
   rect.addEventListener("mouseleave", () => { xh.setAttribute("opacity", 0); tip.style.opacity = 0; });
 }
@@ -809,7 +859,7 @@ function renderWeather(A) {
       ? `<i style="left:50%;width:${w}%;background:#eb6834"></i>` : `<i style="left:${50 - w}%;width:${w}%;background:#3987e5"></i>`; };
   body.innerHTML = `<div class="wx">
     <div>
-      <div class="eyebrow" style="color:#c9b8ff">Next watering</div>
+      <div class="eyebrow" style="color:#5B3FC4">Next watering</div>
       <div class="big ${now ? "now" : ""}">${now ? "Water now" : realMin < 1 ? `Water in ${Math.max(1, Math.round(realMin * 60))} s` : `Water in ${Math.round(realMin)} min`}</div>
       <div class="small">${now ? "Soil moisture is below 30 %." : `≈ ${fmt(simHours, 0)} h of greenhouse time, if the current weather continues`}</div>
     </div>
@@ -899,7 +949,9 @@ function renderScene(r, fc) {
   </svg>`;
 }
 function renderEmpty() {
-  Object.keys(SERIES).forEach(k => { $(`k-${k}`).innerHTML = `<div class="name">${SERIES[k].name}</div><div class="none" style="margin-top:12px">Waiting for data</div>`; });
+  Object.keys(SERIES).forEach(k => { $(`k-${k}`).innerHTML = `<div class="ic" style="background:${SERIES[k].color}26">${svgIcon(k, SERIES[k].color)}</div><div class="name">${SERIES[k].name}</div><div class="val">–</div><div class="sub">Waiting for the next reading</div>`; });
+  $("headline").textContent = "Waiting for data…"; $("heroFlag").innerHTML = ""; $("facts").innerHTML = "";
+  ["c-soil", "c-temp", "c-hum", "c-light"].forEach(id => { $(id).innerHTML = ""; });
 }
 function toast(kind, title, text) {
   const t = document.createElement("div");
@@ -948,7 +1000,7 @@ function showView(tab) {
   $("liveBar").classList.toggle("hidden", tab !== "tabLive");
 }
 function enterReplay() {
-  clearInterval(state.poll); state.mode = "replay";
+  clearInterval(state.poll); clearTimeout(live.retry); state.mode = "replay";
   showView("tabReplay");
   state.data = parseRecorded(RECORDED);
   $("scrub").max = state.data.length - 1;
@@ -959,36 +1011,61 @@ function enterReplay() {
 }
 
 /* ===== Live ThingSpeak ===== */
+// Live readings are merged by entry id, so a slow, cached or failed answer never removes readings.
+const live = { byId: new Map(), sessionStart: null, fails: 0, seq: 0, applied: 0, retry: null, channel: "" };
+function resetLive() { live.byId.clear(); live.sessionStart = null; live.fails = 0; live.applied = live.seq; clearTimeout(live.retry); }
 async function fetchLive() {
   const id = $("chId").value.trim(), key = $("chKey").value.trim();
   if (!/^\d+$/.test(id)) { $("liveMsg").textContent = "Enter your numeric channel ID."; $("liveMsg").className = "msg err"; return; }
-  const url = `https://api.thingspeak.com/channels/${id}/feeds.json?results=8000${key ? "&api_key=" + encodeURIComponent(key) : ""}`;
+  const mySeq = ++live.seq;
+  const url = `https://api.thingspeak.com/channels/${id}/feeds.json?results=8000${key ? "&api_key=" + encodeURIComponent(key) : ""}&_=${Date.now()}`;
+  const ctrl = new AbortController(), timeout = setTimeout(() => ctrl.abort(), 12000);
   try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const res = await fetch(url, { cache: "no-store", signal: ctrl.signal });
+    if (!res.ok) throw new Error(res.status === 400 || res.status === 401 ? "the channel is private: check the Read API key" : res.status === 404 ? "channel not found: check the channel ID" : `HTTP ${res.status}`);
     const json = await res.json();
-    if (!json || !Array.isArray(json.feeds)) throw new Error("unexpected answer (private channel? add the Read API key)");
-    const rows = parseThingSpeak(json.feeds);
-    if (!rows.length) throw new Error("the channel has no complete readings yet");
-    // show only the current session: readings after the last pause longer than SESSION_GAP_MIN
-    let start = 0;
-    for (let i = 1; i < rows.length; i++) if (rows[i].time - rows[i - 1].time > SESSION_GAP_MIN * 60000) start = i;
-    const session = rows.slice(start);
+    if (!json || !Array.isArray(json.feeds)) throw new Error("unexpected answer: check the Read API key");
+    if (mySeq < live.applied) return;          // an older request answered late: ignore it
+    live.applied = mySeq;
+    parseThingSpeak(json.feeds).forEach(r => live.byId.set(r.id, r));
+    const all = [...live.byId.values()].sort((a, b) => a.id - b.id);
+    if (!all.length) throw new Error("the channel has no complete readings yet");
+    // the session is fixed once, at the first successful read: readings after the last long pause
+    if (live.sessionStart === null) {
+      let start = 0;
+      for (let i = 1; i < all.length; i++) if (all[i].time - all[i - 1].time > SESSION_GAP_MIN * 60000) start = i;
+      live.sessionStart = all[start].time.getTime();
+    }
+    const session = all.filter(r => r.time.getTime() >= live.sessionStart);
     state.data = session;
-    const ageMin = (Date.now() - session[session.length - 1].time.getTime()) / 60000;
-    const name = (json.channel && json.channel.name) || "channel " + id;
-    $("liveMsg").textContent = `Connected to “${name}”. Current session: ${session.length} readings since ${fmtShort(session[0].time)}`
-      + (start > 0 ? ` (${rows.length} in the channel)` : "")
-      + (ageMin > SESSION_GAP_MIN ? `. No new reading for ${Math.round(ageMin)} min: is the Wokwi simulation running?` : ". Refreshes every 20 seconds.");
+    live.fails = 0; live.channel = (json.channel && json.channel.name) || "channel " + id;
+    let gaps = 0;
+    for (let i = 1; i < session.length; i++) if (session[i].time - session[i - 1].time > 60000) gaps++;
+    const ageMin = session.length ? (Date.now() - session[session.length - 1].time.getTime()) / 60000 : 0;
+    $("liveMsg").textContent = `Connected to “${live.channel}”. ${session.length} readings in this session`
+      + (session.length ? ` since ${fmtShort(session[0].time)}` : "")
+      + (gaps ? `, ${gaps} gap${gaps > 1 ? "s" : ""} longer than a minute (Wokwi paused or an upload failed)` : "")
+      + (ageMin > 2 ? `. No new reading for ${Math.round(ageMin)} min: is the Wokwi simulation running and visible?` : ".");
     $("liveMsg").className = "msg";
     $("srcNote").textContent = `Live data from ThingSpeak channel ${id}`;
     setStatus("live", "Live, connected");
-    render();
+    if (session.length) render(); else renderEmpty();
   } catch (err) {
-    $("liveMsg").textContent = `Could not read the channel: ${err.message}. Check the channel ID and Read API key.`;
-    $("liveMsg").className = "msg err";
-    setStatus("err", "Live, error");
-  }
+    if (mySeq < live.applied) return;
+    live.fails++;
+    const reason = err.name === "AbortError" ? "ThingSpeak took too long to answer" : err.message;
+    if (!live.byId.size) {                       // never connected: it is a setup problem
+      $("liveMsg").textContent = `Could not read the channel: ${reason}.`;
+      $("liveMsg").className = "msg err"; setStatus("err", "Live, not connected");
+      return;
+    }
+    // already connected: keep every reading on screen and retry soon
+    clearTimeout(live.retry);
+    live.retry = setTimeout(fetchLive, 5000);
+    $("liveMsg").textContent = `Refresh failed (${reason}). Your ${state.data.length} readings are kept; retrying in 5 seconds.`;
+    $("liveMsg").className = live.fails >= 3 ? "msg err" : "msg";
+    setStatus(live.fails >= 3 ? "err" : "idle", live.fails >= 3 ? "Live, connection lost" : "Live, reconnecting");
+  } finally { clearTimeout(timeout); }
 }
 function enterLive() {
   stopPlay(); state.mode = "live";
@@ -998,10 +1075,11 @@ function enterLive() {
 }
 $("connectBtn").onclick = () => {
   try { localStorage.setItem("greenhouse.channel", $("chId").value.trim()); } catch (e) {}
-  state.seenEvents.clear(); state.first = true; state.wasNow = false;
+  resetLive();
+  state.seenEvents.clear(); state.first = true; state.wasNow = false; state.prevVals = {};
   clearInterval(state.poll); fetchLive(); state.nextPoll = Date.now() + POLL_MS;
   state.poll = setInterval(() => { fetchLive(); state.nextPoll = Date.now() + POLL_MS; }, POLL_MS);
-  $("refreshBtn").classList.remove("hidden");
+  $("refreshBtn").classList.remove("hidden"); $("newSessionBtn").classList.remove("hidden");
 };
 $("tabReplay").onclick = enterReplay;
 $("tabLive").onclick = enterLive;
@@ -1022,6 +1100,10 @@ setInterval(() => {
   const sec = Math.max(0, Math.ceil((state.nextPoll - Date.now()) / 1000));
   $("liveTimer").textContent = `Next update in ${sec} s`;
 }, 500);
+$("newSessionBtn").onclick = () => {
+  live.sessionStart = Date.now() - 1000; state.data = []; state.seenEvents.clear(); state.first = true; state.wasNow = false; state.prevVals = {};
+  renderEmpty(); $("liveMsg").textContent = "New session started: waiting for the next reading from Wokwi."; $("liveMsg").className = "msg";
+};
 $("refreshBtn").onclick = () => { clearInterval(state.poll); fetchLive(); state.nextPoll = Date.now() + POLL_MS; state.poll = setInterval(() => { fetchLive(); state.nextPoll = Date.now() + POLL_MS; }, POLL_MS); };
 document.addEventListener("keydown", e => {
   if (e.code !== "Space" || state.mode !== "replay" || /INPUT|SELECT|TEXTAREA|BUTTON/.test(e.target.tagName)) return;
@@ -1068,7 +1150,7 @@ function renderSim() {
     ${yt.map(v => `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--grid)"/><text x="${m.l - 8}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="var(--text-3)">${v}%</text>`).join("")}
     ${xt.map(v => `<text x="${X(v)}" y="${Hh - 8}" text-anchor="middle" font-size="11" fill="var(--text-3)">${v} h</text>`).join("")}
     <line x1="${m.l}" x2="${W - m.r}" y1="${Y(THRESHOLD)}" y2="${Y(THRESHOLD)}" stroke="var(--critical)" stroke-dasharray="6 5" stroke-width="1.5"/>
-    ${S > THRESHOLD ? line(hoursT, "var(--text-2)", true) + line(hoursW, "#a78bfa", false) : ""}
+    ${S > THRESHOLD ? line(hoursT, "var(--text-2)", true) + line(hoursW, "#6E56CF", false) : ""}
   </svg>`;
 }
 /* ----- Open-Meteo: real 7-day forecast, run through the weather-aware model hour by hour ----- */
@@ -1138,12 +1220,12 @@ function renderApi() {
   const svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Soil moisture forecast with the real weather">${shade}
     ${[20, 40, 60, 80].map(v => `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--grid)"/><text x="${m.l - 8}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="var(--text-3)">${v}%</text>`).join("")}${ticks}
     <line x1="${m.l}" x2="${W - m.r}" y1="${Y(THRESHOLD)}" y2="${Y(THRESHOLD)}" stroke="var(--critical)" stroke-dasharray="6 5" stroke-width="1.5"/>
-    ${fixedLine}<polyline points="${pts}" fill="none" stroke="#a78bfa" stroke-width="2.4" stroke-linejoin="round"/>
+    ${fixedLine}<polyline points="${pts}" fill="none" stroke="#6E56CF" stroke-width="2.4" stroke-linejoin="round"/>
     ${waterIdx > 0 && waterIdx <= n ? `<circle cx="${X(waterIdx)}" cy="${Y(path[path.length - 1].soil)}" r="6" fill="var(--critical)" stroke="var(--surface)" stroke-width="2"/>` : ""}</svg>`;
   $("apiBody").innerHTML = `
     <div class="wx" style="margin-top:0">
       <div>
-        <div class="eyebrow" style="color:#c9b8ff">With the real weather</div>
+        <div class="eyebrow" style="color:#5B3FC4">With the real weather</div>
         <div class="big ${S0 <= THRESHOLD ? "now" : ""}" style="font-size:30px">${head}</div>
         <div class="small">${sub}</div>
       </div>
@@ -1156,7 +1238,7 @@ function renderApi() {
         <button class="chip" id="useNow" style="margin-top:10px">Put today's weather in the simulator</button></div>
     </div>
     <div class="chart" style="height:230px;margin-top:14px">${svg}</div>
-    <div class="legend" style="margin-top:6px"><span><i class="sw" style="border-color:#a78bfa"></i>Weather-aware model, hour by hour</span><span><i class="sw dash" style="border-color:var(--text-2)"></i>Time-only model (0.78 %/h): ${S0 > THRESHOLD ? (fixedH < 48 ? fixedH.toFixed(0) + " h" : (fixedH / 24).toFixed(1) + " days") : "now"}</span><span><i class="sw pt" style="background:rgba(57,135,229,0.35);border-radius:2px"></i>Night</span></div>
+    <div class="legend" style="margin-top:6px"><span><i class="sw" style="border-color:#6E56CF"></i>Weather-aware model, hour by hour</span><span><i class="sw dash" style="border-color:var(--text-2)"></i>Time-only model (0.78 %/h): ${S0 > THRESHOLD ? (fixedH < 48 ? fixedH.toFixed(0) + " h" : (fixedH / 24).toFixed(1) + " days") : "now"}</span><span><i class="sw pt" style="background:rgba(57,135,229,0.35);border-radius:2px"></i>Night</span></div>
     <div class="wxnote">Outdoor forecast from Open-Meteo, with the greenhouse assumed ${warm} °C warmer than outside. Sunlight: 1000 W/m² of solar radiation counts as 100 % light. The soil dries fast in the sunny afternoons and almost stops at night; the time-only model cannot see this.</div>`;
   $("useNow").onclick = () => { $("sT").value = Math.max(0, Math.min(45, curT)); $("sH").value = Math.round(Math.max(10, Math.min(100, c.hum))); $("sL").value = Math.round(curLight); renderSim(); window.scrollTo({ top: $("wxPage").offsetTop, behavior: "smooth" }); };
 }
