@@ -3,9 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Greenhouse AIoT Dashboard</title>
+<title>Serre, greenhouse monitor</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5 34V20C5 11.7 11.7 5 20 5s15 6.7 15 15v14z' fill='%232E7D46'/%3E%3Cpath d='M20 31V19' stroke='%23F3F8EF' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpath d='M20 22c-4.6.2-7.4-2.3-8-6.6 4.5-.3 7.4 2 8 6.6z' fill='%23BFE38A'/%3E%3Cpath d='M20 19.5c.5-4.2 3.3-6.6 7.6-6.4-.4 4.2-3.2 6.6-7.6 6.4z' fill='%23F3F8EF'/%3E%3Cpath d='M29.5 7.5a9 9 0 0 1 4 4M31.6 3.6a13.5 13.5 0 0 1 6 6' stroke='%232E7D46' stroke-width='2.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
 <style>
 :root {
   color-scheme: light;
@@ -325,17 +326,100 @@ tr.bad td { color: #A4241D; }
 .rangebar .chip.on { background: rgba(46,125,70,0.1); border-color: var(--brand); color: #1F6B37; }
 .none { border-color: #C9D5CE; }
 .figs figure { background: #F6F8F7; border: 1px solid #E1E8E4; }
+
+/* ===== design v3: Serre ===== */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+:root { --display: "Bricolage Grotesque", "Schibsted Grotesk", system-ui, sans-serif; --paper: #F6F8F4; }
+body { background: var(--bg); }
+.wrap { max-width: 1480px; padding: 22px clamp(16px, 2.6vw, 48px) 44px; }
+header { gap: 14px 22px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--card-border); }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+.brand .mark svg { width: 40px; height: 40px; display: block; }
+.brand .word { font: 800 30px/1 var(--display); letter-spacing: -1px; }
+.tagline { font-size: 14px; color: var(--text-2); max-width: 46ch; line-height: 1.4; }
+.tabs { background: none; border: 0; padding: 0; gap: 4px; border-radius: 0; }
+.tabs button { border-radius: 0; padding: 8px 4px; margin: 0 8px; background: none !important; box-shadow: none !important; border-bottom: 2px solid transparent; color: var(--text-2); font-size: 14.5px; }
+.tabs button.on { color: var(--text); border-bottom-color: var(--brand); }
+.status { background: none; border: 0; padding: 0; font-weight: 500; color: var(--text-2); }
+.controls { border-radius: 8px; box-shadow: none; padding: 10px 14px; }
+.btn { border-radius: 6px; }
+select, input[type=text], input[type=password] { border-radius: 6px; }
+h1, .headline, .anom-head .n, .wx .big, .wxhero h2, .card h3, .srow .val { font-family: var(--display); }
+.card { border-radius: 8px; box-shadow: none; }
+.card h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+.note { font-size: 12.5px; color: var(--text-3); }
+
+/* stage */
+.stage { grid-template-columns: minmax(0, 1.65fr) minmax(320px, 1fr); border-radius: 10px; box-shadow: none; background: #FFFFFF; }
+.stage .scene { aspect-ratio: 640 / 300; height: 100%; }
+.forecast { padding: 26px 28px; display: flex; flex-direction: column; gap: 12px; border-left: 1px solid var(--card-border); }
+@media (max-width: 1000px) { .forecast { border-left: 0; border-top: 1px solid var(--card-border); } }
+.forecast .headline { font-size: clamp(40px, 4.2vw, 60px); font-weight: 800; letter-spacing: -2px; line-height: 0.98; margin: 0; }
+.eyebrow { font-size: 14px; font-weight: 600; color: var(--brand); }
+.meter { margin-top: 6px; }
+.progress { height: 14px; border-radius: 2px; background:
+  repeating-linear-gradient(90deg, rgba(20,45,32,0.22) 0 1px, transparent 1px 10%), #EAF0EC; }
+.progress i { border-radius: 2px; background: var(--soil); opacity: 0.85; }
+.plabels { font-size: 12px; }
+.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; margin-top: 4px; border-top: 1px solid var(--card-border); }
+.fact { background: none !important; border: 0; border-bottom: 1px solid var(--card-border); border-radius: 0; padding: 10px 0; }
+.fact:nth-child(odd) { padding-right: 12px; } .fact:nth-child(even) { padding-left: 12px; border-left: 1px solid var(--card-border); }
+.fact b { font-family: var(--display); font-size: 21px; }
+
+/* plant tags */
+.tags { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; padding: 14px 4px 30px; }
+@media (max-width: 1000px) { .tags { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .tags { grid-template-columns: 1fr; } }
+.srow { all: unset; box-sizing: border-box; cursor: pointer; position: relative; display: flex; flex-direction: column; gap: 6px;
+  padding: 26px 18px 16px; background: var(--paper); border: 1.5px solid #CCD8CF; border-top: 7px solid var(--tag, var(--brand));
+  border-radius: 6px 6px 3px 3px; transform: rotate(-0.8deg); transition: transform .25s ease, box-shadow .25s ease; }
+.srow:nth-child(even) { transform: rotate(0.7deg); }
+.srow:hover, .srow:focus-visible { transform: rotate(0deg) translateY(-3px); box-shadow: 0 8px 18px rgba(20,45,32,0.10); }
+.srow:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
+.srow::after { content: ""; position: absolute; left: 50%; bottom: -24px; width: 14px; height: 24px; transform: translateX(-50%);
+  background: linear-gradient(90deg, #D9E2DB, #C3CFC6); border-radius: 0 0 3px 3px; }
+.srow .hole { position: absolute; top: 9px; left: 50%; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%;
+  background: var(--bg); box-shadow: inset 0 1px 2px rgba(20,45,32,0.35); }
+.srow .name { display: flex; align-items: center; gap: 7px; font-size: 14.5px; font-weight: 600; flex-wrap: wrap; }
+.srow .name svg { width: 18px; height: 18px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.srow .val { font-size: 40px; font-weight: 800; letter-spacing: -1.4px; text-align: left; line-height: 1; }
+.srow .val small { font-family: "Schibsted Grotesk", system-ui, sans-serif; font-size: 15px; letter-spacing: 0; }
+.srow .spark { width: 100%; height: 34px; }
+.srow .delta { font-size: 12.5px; color: var(--text-2); }
+.srow .sub { font-size: 12px; color: var(--text-3); grid-column: auto; }
+.srow.flash { animation: tagflash 1.1s ease; }
+.srow.flash::after { inset: auto; top: auto; left: 50%; bottom: -24px; width: 14px; height: 24px; opacity: 1;
+  background: linear-gradient(90deg, #D9E2DB, #C3CFC6); animation: none; }
+@keyframes tagflash { 0% { background: #E6F3E3; } 100% { background: var(--paper); } }
+
+/* anomaly logbook */
+.anom-head .n { font-size: 52px; font-weight: 800; }
+.events { gap: 0; border-top: 1px solid var(--card-border); }
+.ev { background: none !important; border: 0; border-bottom: 1px solid var(--card-border); border-radius: 0; padding: 12px 0 12px 14px;
+  grid-template-columns: 1fr auto; position: relative; animation: none; }
+.ev::before { content: ""; position: absolute; left: 0; top: 12px; bottom: 12px; width: 3px; background: var(--critical); border-radius: 2px; }
+.ev .ic { display: none; }
+.ev .v { font-family: var(--display); font-size: 22px; color: var(--critical); }
+.none { border-radius: 4px; }
+
+/* charts */
+.rangebar { margin-top: 18px; }
+.chip { border-radius: 4px; }
+.chart-head { margin-bottom: 4px; }
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <header>
-  <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#8FD694" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></div>
-  <div class="titles">
-    <h1>Greenhouse monitor</h1>
-    <p>A simulated ESP32 sends readings to ThingSpeak; the AI predicts when to water</p>
-  </div>
+  <a class="brand" href="#" aria-label="Serre, greenhouse monitor">
+    <span class="mark"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M5 34V20C5 11.7 11.7 5 20 5s15 6.7 15 15v14z" fill="#2E7D46"/><path d="M20 31V19" stroke="#F3F8EF" stroke-width="2.4" stroke-linecap="round"/><path d="M20 22c-4.6.2-7.4-2.3-8-6.6 4.5-.3 7.4 2 8 6.6z" fill="#BFE38A"/><path d="M20 19.5c.5-4.2 3.3-6.6 7.6-6.4-.4 4.2-3.2 6.6-7.6 6.4z" fill="#F3F8EF"/><path d="M29.5 7.5a9 9 0 0 1 4 4M31.6 3.6a13.5 13.5 0 0 1 6 6" stroke="#2E7D46" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></span>
+    <span class="word">Serre</span>
+  </a>
+  <p class="tagline">Greenhouse monitor: a simulated ESP32 sends readings to ThingSpeak, and the AI predicts when to water.</p>
   <div class="spacer"></div>
   <div class="tabs" role="tablist">
     <button id="tabReplay" class="on" role="tab">Replay</button>
@@ -368,30 +452,25 @@ tr.bad td { color: #A4241D; }
 </div>
 
 <div class="grid" id="dashGrid">
-  <!-- stage: live greenhouse illustration, forecast and sensor list -->
+  <!-- stage: live greenhouse illustration with the forecast beside it -->
   <section class="stage span12 hero-card" id="heroCard">
-    <div>
-      <div class="scene" id="scene"></div>
-      <div class="scene-copy">
-        <div>
-          <div class="eyebrow">AI watering forecast</div>
-          <div class="headline" id="headline">–</div>
-          <div id="heroFlag"></div>
-        </div>
-        <div class="facts" id="facts"></div>
-        <div>
-          <div class="progress"><i id="prog"></i></div>
-          <div class="plabels"><span>30 %, water</span><span id="progLabel"></span><span>85 %, just watered</span></div>
-        </div>
-      </div>
+    <div class="scene" id="scene"></div>
+    <div class="forecast">
+      <div class="eyebrow">AI watering forecast</div>
+      <div class="headline" id="headline">–</div>
+      <div id="heroFlag"></div>
+      <div class="meter" aria-hidden="true"><div class="progress"><i id="prog"></i></div>
+        <div class="plabels"><span>30 % water</span><span id="progLabel"></span><span>85 % watered</span></div></div>
+      <div class="facts" id="facts"></div>
     </div>
-    <aside class="sensors" aria-label="Sensor readings">
-      <div class="cap">Sensors. Click one to see its chart.</div>
-      <button class="srow" id="k-temp" data-chart="c-temp"></button>
-      <button class="srow" id="k-hum" data-chart="c-hum"></button>
-      <button class="srow" id="k-soil" data-chart="c-soil"></button>
-      <button class="srow" id="k-light" data-chart="c-light"></button>
-    </aside>
+  </section>
+
+  <!-- sensors as plant tags -->
+  <section class="tags span12" aria-label="Sensor readings">
+    <button class="srow" id="k-temp" data-chart="c-temp"></button>
+    <button class="srow" id="k-hum" data-chart="c-hum"></button>
+    <button class="srow" id="k-soil" data-chart="c-soil"></button>
+    <button class="srow" id="k-light" data-chart="c-light"></button>
   </section>
 
   <!-- anomalies -->
@@ -399,14 +478,14 @@ tr.bad td { color: #A4241D; }
     <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef6b6b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>Anomaly detection</h3>
     <div class="anom-head"><span class="n" id="anomN">0</span><span class="t" id="anomT">events detected</span></div>
     <div class="method">A reading is flagged when it is more than 10 °C away from the median of the 21 readings around it (about 6 minutes).</div>
-    <div class="events" id="events"></div>
+    <div class="events" id="events" data-lenis-prevent></div>
   </div>
 
   <!-- weather-aware model (extension) -->
   <div class="card span7" id="wxCard">
     <div class="chart-head">
       <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6E56CF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>Weather-aware forecast</h3>
-      <span class="pill2">Extension model</span>
+      <span class="note">Extension, synthetic training data</span>
     </div>
     <div id="wxBody"></div>
   </div>
@@ -466,7 +545,7 @@ tr.bad td { color: #A4241D; }
 
 <details class="table card" id="dashTable" style="padding:14px 18px">
   <summary>Show the data table</summary>
-  <div class="tbl" id="tbl"></div>
+  <div class="tbl" id="tbl" data-lenis-prevent></div>
 </details>
 
 <section id="wxPage" class="hidden">
@@ -484,7 +563,7 @@ tr.bad td { color: #A4241D; }
     </div>
 
     <div class="card span12">
-      <div class="chart-head"><h3>Try the model</h3><span class="pill2">Interactive</span></div>
+      <div class="chart-head"><h3>Try the model</h3><span class="note">Move the sliders</span></div>
       <div class="sim">
         <div>
           <div class="chips" id="presets"></div>
@@ -508,7 +587,7 @@ tr.bad td { color: #A4241D; }
     <div class="card span12" id="apiCard">
       <div class="chart-head">
         <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6E56CF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>Real weather forecast</h3>
-        <span class="pill2">Open-Meteo API</span>
+        <span class="note">Data from Open-Meteo</span>
       </div>
       <div class="controls" style="margin:10px 0 14px;padding:12px 14px">
         <label class="lbl" for="city">City</label>
@@ -556,7 +635,23 @@ tr.bad td { color: #A4241D; }
 </div>
 <div class="toasts" id="toasts"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js"></script>
 <script>
+/* ===== Smooth scrolling (Lenis); the page scrolls normally if the library is blocked ===== */
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let lenis = null;
+if (window.Lenis && !reduceMotion) {
+  lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
+  const raf = t => { lenis.raf(t); requestAnimationFrame(raf); };
+  requestAnimationFrame(raf);
+}
+function scrollToEl(target, center) {
+  if (target === 0) { lenis ? lenis.scrollTo(0) : window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }); return; }
+  const off = center ? -(innerHeight - target.offsetHeight) / 2 : -16;
+  if (lenis) lenis.scrollTo(target, { offset: off });
+  else target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: center ? "center" : "start" });
+}
+
 /* ===== Recorded data: ThingSpeak export (feeds.csv), 1 November 2026 ===== */
 const RECORDED = [["2026-11-01T12:21:33+00:00",1,20.0,65.0,84.6,0.0],["2026-11-01T12:21:53+00:00",2,18.0,80.0,83.8,20.0],["2026-11-01T12:23:00+00:00",3,18.0,80.0,83.3,20.0],["2026-11-01T12:23:17+00:00",4,18.0,80.0,82.4,20.0],["2026-11-01T12:23:35+00:00",5,18.0,80.0,81.9,20.0],["2026-11-01T12:23:52+00:00",6,18.0,80.0,81.2,20.0],["2026-11-01T12:24:10+00:00",7,18.0,80.0,80.2,20.0],["2026-11-01T12:24:27+00:00",8,18.0,80.0,79.3,20.0],["2026-11-01T12:24:56+00:00",9,18.0,80.0,78.4,20.0],["2026-11-01T12:25:14+00:00",10,18.0,80.0,77.5,20.0],["2026-11-01T12:25:32+00:00",11,18.0,80.0,76.7,20.0],["2026-11-01T12:25:50+00:00",12,18.0,80.0,76.2,20.0],["2026-11-01T12:26:07+00:00",13,18.0,80.0,75.2,20.0],["2026-11-01T12:26:25+00:00",14,18.0,80.0,74.7,20.0],["2026-11-01T12:26:48+00:00",15,18.0,80.0,74.1,20.0],["2026-11-01T12:27:06+00:00",16,18.0,80.0,73.5,20.0],["2026-11-01T12:27:23+00:00",17,18.0,80.0,73.0,20.0],["2026-11-01T12:27:41+00:00",18,18.0,80.0,72.1,20.0],["2026-11-01T12:27:58+00:00",19,18.0,80.0,71.4,20.0],["2026-11-01T12:28:16+00:00",20,18.0,80.0,70.8,20.0],["2026-11-01T12:28:34+00:00",21,18.0,80.0,69.9,20.0],["2026-11-01T12:28:51+00:00",22,18.0,80.0,68.9,20.0],["2026-11-01T12:29:09+00:00",23,18.0,80.0,68.1,20.0],["2026-11-01T12:29:26+00:00",24,18.0,80.0,67.3,20.0],["2026-11-01T12:29:44+00:00",25,18.0,80.0,66.4,20.0],["2026-11-01T12:30:01+00:00",26,18.0,80.0,66.0,20.0],["2026-11-01T12:30:19+00:00",27,18.0,80.0,65.4,20.0],["2026-11-01T12:30:36+00:00",28,18.0,80.0,64.8,20.0],["2026-11-01T12:30:54+00:00",29,18.0,80.0,63.8,20.0],["2026-11-01T12:31:11+00:00",30,18.0,80.0,63.1,20.0],["2026-11-01T12:31:28+00:00",31,18.0,80.0,62.6,20.0],["2026-11-01T12:31:46+00:00",32,18.0,80.0,61.8,20.0],["2026-11-01T12:32:04+00:00",33,18.0,80.0,61.0,20.0],["2026-11-01T12:32:21+00:00",34,18.0,80.0,60.1,20.0],["2026-11-01T12:32:39+00:00",35,21.8,80.0,59.2,20.0],["2026-11-01T12:32:56+00:00",36,24.0,65.0,58.8,51.0],["2026-11-01T12:33:14+00:00",37,24.0,65.0,58.2,50.0],["2026-11-01T12:33:31+00:00",38,24.0,65.0,57.2,54.0],["2026-11-01T12:33:48+00:00",39,24.0,65.0,56.7,54.0],["2026-11-01T12:34:06+00:00",40,24.0,65.0,56.2,54.0],["2026-11-01T12:34:23+00:00",41,24.0,65.0,55.5,54.0],["2026-11-01T12:34:41+00:00",42,24.0,65.0,55.1,54.0],["2026-11-01T12:34:58+00:00",43,24.0,65.0,54.4,54.0],["2026-11-01T12:35:16+00:00",44,24.0,65.0,53.5,54.0],["2026-11-01T12:35:33+00:00",45,24.0,65.0,52.6,54.0],["2026-11-01T12:35:51+00:00",46,24.0,65.0,52.1,54.0],["2026-11-01T12:36:08+00:00",47,24.0,65.0,51.2,54.0],["2026-11-01T12:36:25+00:00",48,24.0,65.0,50.6,54.0],["2026-11-01T12:36:43+00:00",49,24.0,65.0,50.2,54.0],["2026-11-01T12:37:01+00:00",50,24.0,65.0,49.4,54.0],["2026-11-01T12:37:18+00:00",51,24.0,65.0,49.0,54.0],["2026-11-01T12:37:36+00:00",52,24.0,65.0,48.6,54.0],["2026-11-01T12:37:53+00:00",53,24.0,65.0,47.9,54.0],["2026-11-01T12:38:11+00:00",54,24.0,65.0,47.3,54.0],["2026-11-01T12:38:28+00:00",55,24.0,65.0,46.8,54.0],["2026-11-01T12:38:45+00:00",56,24.0,65.0,45.9,54.0],["2026-11-01T12:39:03+00:00",57,24.0,65.0,45.4,54.0],["2026-11-01T12:39:20+00:00",58,24.0,65.0,44.5,54.0],["2026-11-01T12:39:38+00:00",59,24.0,65.0,44.0,54.0],["2026-11-01T12:39:55+00:00",60,24.0,65.0,43.3,54.0],["2026-11-01T12:40:13+00:00",61,24.0,65.0,42.4,54.0],["2026-11-01T12:40:30+00:00",62,24.0,65.0,41.8,54.0],["2026-11-01T12:40:48+00:00",63,24.0,65.0,41.3,54.0],["2026-11-01T12:41:05+00:00",64,24.0,65.0,40.7,54.0],["2026-11-01T12:41:22+00:00",65,24.0,65.0,39.9,54.0],["2026-11-01T12:41:40+00:00",66,24.0,65.0,39.0,54.0],["2026-11-01T12:41:57+00:00",67,24.0,65.0,38.5,54.0],["2026-11-01T12:42:15+00:00",68,32.0,44.5,37.6,54.0],["2026-11-01T12:42:32+00:00",69,32.0,45.0,37.0,90.0],["2026-11-01T12:42:50+00:00",70,32.0,45.0,36.2,90.0],["2026-11-01T12:43:07+00:00",71,32.0,45.0,35.7,90.0],["2026-11-01T12:43:25+00:00",72,32.0,45.0,35.1,90.0],["2026-11-01T12:43:42+00:00",73,32.0,45.0,34.4,90.0],["2026-11-01T12:44:00+00:00",74,32.0,45.0,33.9,90.0],["2026-11-01T12:44:17+00:00",75,32.0,45.0,32.9,90.0],["2026-11-01T12:44:35+00:00",76,32.0,45.0,32.3,90.0],["2026-11-01T12:44:52+00:00",77,32.0,45.0,31.5,90.0],["2026-11-01T12:45:10+00:00",78,32.0,45.0,30.9,90.0],["2026-11-01T12:45:27+00:00",79,32.0,45.0,30.4,90.0],["2026-11-01T12:45:45+00:00",80,32.0,45.0,29.8,90.0],["2026-11-01T12:46:03+00:00",81,32.0,45.0,29.1,90.0],["2026-11-01T12:46:20+00:00",82,32.0,45.0,28.5,90.0],["2026-11-01T12:46:38+00:00",83,32.0,45.0,27.7,90.0],["2026-11-01T12:46:55+00:00",84,32.0,45.0,27.0,90.0],["2026-11-01T12:47:13+00:00",85,32.0,45.0,26.1,90.0],["2026-11-01T12:47:30+00:00",86,32.0,45.0,25.3,90.0],["2026-11-01T12:47:48+00:00",87,32.0,45.0,24.8,90.0],["2026-11-01T12:48:05+00:00",88,32.0,45.0,24.1,90.0],["2026-11-01T12:48:23+00:00",89,32.0,45.0,23.2,90.0],["2026-11-01T12:48:40+00:00",90,32.0,45.0,22.2,90.0],["2026-11-01T12:48:58+00:00",91,32.0,45.0,21.7,90.0],["2026-11-01T12:49:15+00:00",92,32.0,45.0,21.2,90.0],["2026-11-01T12:49:33+00:00",93,32.0,45.0,20.3,90.0],["2026-11-01T12:49:50+00:00",94,32.0,45.0,19.4,90.0],["2026-11-01T12:50:08+00:00",95,32.0,45.0,18.7,90.0],["2026-11-01T12:50:25+00:00",96,32.0,45.0,17.9,90.0],["2026-11-01T12:50:42+00:00",97,32.0,45.0,17.1,90.0],["2026-11-01T12:51:00+00:00",98,32.0,45.0,16.6,90.0],["2026-11-01T12:51:17+00:00",99,32.0,45.0,15.8,90.0],["2026-11-01T12:51:35+00:00",100,32.0,45.0,85.0,90.0],["2026-11-01T12:51:52+00:00",101,32.0,45.0,84.5,90.0],["2026-11-01T12:52:10+00:00",102,34.0,40.0,83.8,80.0],["2026-11-01T12:52:27+00:00",103,34.0,40.0,83.3,80.0],["2026-11-01T12:52:45+00:00",104,34.0,40.0,82.3,80.0],["2026-11-01T12:53:02+00:00",105,34.0,40.0,81.8,80.0],["2026-11-01T12:53:20+00:00",106,34.0,40.0,81.1,80.0],["2026-11-01T12:53:37+00:00",107,34.0,40.0,80.1,80.0],["2026-11-01T12:53:55+00:00",108,34.0,40.0,79.2,80.0],["2026-11-01T12:54:12+00:00",109,34.0,40.0,78.7,80.0],["2026-11-01T12:54:30+00:00",110,34.0,40.0,77.9,80.0],["2026-11-01T12:54:47+00:00",111,34.0,40.0,77.4,80.0],["2026-11-01T12:55:05+00:00",112,34.0,40.0,76.6,80.0],["2026-11-01T12:55:22+00:00",113,34.0,40.0,75.7,80.0],["2026-11-01T12:55:40+00:00",114,34.0,40.0,75.0,80.0],["2026-11-01T12:55:57+00:00",115,34.0,40.0,74.0,80.0],["2026-11-01T12:56:14+00:00",116,34.0,40.0,73.2,80.0],["2026-11-01T12:56:32+00:00",117,34.0,40.0,72.5,80.0],["2026-11-01T12:56:49+00:00",118,34.0,40.0,71.9,80.0],["2026-11-01T12:57:07+00:00",119,34.0,40.0,71.5,80.0],["2026-11-01T12:57:24+00:00",120,34.0,40.0,70.6,80.0],["2026-11-01T12:57:42+00:00",121,34.0,40.0,69.8,80.0],["2026-11-01T12:58:02+00:00",122,34.0,40.0,69.3,80.0],["2026-11-01T12:58:20+00:00",123,34.0,40.0,68.7,80.0],["2026-11-01T12:58:37+00:00",124,34.0,40.0,68.3,80.0],["2026-11-01T12:58:55+00:00",125,34.0,40.0,67.5,80.0],["2026-11-01T12:59:12+00:00",126,34.0,40.0,66.8,80.0],["2026-11-01T12:59:30+00:00",127,34.0,40.0,66.0,80.0],["2026-11-01T12:59:47+00:00",128,34.0,40.0,65.5,80.0],["2026-11-01T13:00:05+00:00",129,34.0,40.0,64.8,80.0],["2026-11-01T13:00:23+00:00",130,34.0,40.0,64.3,80.0],["2026-11-01T13:00:40+00:00",131,34.0,40.0,63.8,80.0],["2026-11-01T13:00:58+00:00",132,34.0,40.0,63.4,80.0],["2026-11-01T13:01:15+00:00",133,34.0,40.0,62.7,80.0],["2026-11-01T13:01:33+00:00",134,34.0,40.0,62.0,80.0],["2026-11-01T13:01:50+00:00",135,34.0,40.0,61.0,80.0],["2026-11-01T13:02:08+00:00",136,26.0,60.0,60.5,80.0],["2026-11-01T13:02:25+00:00",137,26.0,60.0,59.8,32.0],["2026-11-01T13:02:43+00:00",138,26.0,60.0,58.9,37.0],["2026-11-01T13:03:00+00:00",139,26.0,60.0,58.3,35.0],["2026-11-01T13:03:18+00:00",140,26.0,60.0,57.3,35.0],["2026-11-01T13:03:35+00:00",141,26.0,60.0,56.6,35.0],["2026-11-01T13:03:53+00:00",142,26.0,60.0,56.0,35.0],["2026-11-01T13:04:10+00:00",143,26.0,60.0,55.2,35.0],["2026-11-01T13:04:28+00:00",144,26.0,60.0,54.4,35.0],["2026-11-01T13:04:45+00:00",145,26.0,60.0,53.7,35.0],["2026-11-01T13:05:03+00:00",146,26.0,60.0,53.1,35.0],["2026-11-01T13:05:20+00:00",147,26.0,60.0,52.6,35.0],["2026-11-01T13:05:37+00:00",148,26.0,60.0,51.7,35.0],["2026-11-01T13:05:55+00:00",149,26.0,60.0,50.8,35.0],["2026-11-01T13:06:12+00:00",150,26.0,60.0,49.9,35.0],["2026-11-01T13:06:30+00:00",151,26.0,60.0,49.3,35.0],["2026-11-01T13:06:47+00:00",152,26.0,60.0,48.4,35.0],["2026-11-01T13:07:05+00:00",153,26.0,60.0,47.8,35.0],["2026-11-01T13:07:22+00:00",154,26.0,60.0,47.1,35.0],["2026-11-01T13:07:39+00:00",155,26.0,60.0,46.5,35.0],["2026-11-01T13:07:57+00:00",156,26.0,60.0,45.5,35.0],["2026-11-01T13:08:14+00:00",157,26.0,60.0,44.8,35.0],["2026-11-01T13:08:32+00:00",158,26.0,60.0,44.1,35.0],["2026-11-01T13:08:49+00:00",159,26.0,60.0,43.5,35.0],["2026-11-01T13:09:07+00:00",160,26.0,60.0,42.9,35.0],["2026-11-01T13:09:24+00:00",161,26.0,60.0,42.4,35.0],["2026-11-01T13:09:42+00:00",162,26.0,60.0,41.6,35.0],["2026-11-01T13:10:00+00:00",163,26.0,60.0,40.9,35.0],["2026-11-01T13:10:17+00:00",164,26.0,60.0,40.1,35.0],["2026-11-01T13:10:35+00:00",165,26.0,60.0,39.5,35.0],["2026-11-01T13:10:52+00:00",166,26.0,60.0,39.0,35.0],["2026-11-01T13:11:10+00:00",167,26.0,60.0,38.3,35.0],["2026-11-01T13:11:27+00:00",168,26.0,60.0,37.3,35.0],["2026-11-01T13:11:45+00:00",169,26.0,60.0,36.4,35.0],["2026-11-01T13:12:02+00:00",170,26.0,60.0,35.7,35.0],["2026-11-01T13:12:22+00:00",171,26.0,60.0,34.8,35.0],["2026-11-01T13:12:40+00:00",172,26.0,60.0,34.3,35.0],["2026-11-01T13:12:58+00:00",173,26.0,60.0,33.7,35.0],["2026-11-01T13:13:16+00:00",174,17.0,85.0,32.9,0.0],["2026-11-01T13:13:34+00:00",175,17.0,85.0,32.3,0.0],["2026-11-01T13:13:51+00:00",176,17.0,85.0,31.6,0.0],["2026-11-01T13:14:08+00:00",177,17.0,85.0,31.0,0.0],["2026-11-01T13:14:26+00:00",178,17.0,85.0,30.1,0.0],["2026-11-01T13:14:43+00:00",179,17.0,85.0,29.2,0.0],["2026-11-01T13:15:01+00:00",180,17.0,85.0,28.8,0.0],["2026-11-01T13:15:18+00:00",181,17.0,85.0,28.0,0.0],["2026-11-01T13:15:36+00:00",182,17.0,85.0,27.1,0.0],["2026-11-01T13:15:53+00:00",183,17.0,85.0,26.6,0.0],["2026-11-01T13:16:11+00:00",184,17.0,85.0,26.0,0.0],["2026-11-01T13:16:28+00:00",185,17.0,85.0,25.4,0.0],["2026-11-01T13:16:46+00:00",186,17.0,85.0,24.5,0.0],["2026-11-01T13:17:03+00:00",187,17.0,85.0,23.6,0.0],["2026-11-01T13:17:20+00:00",188,17.0,85.0,23.1,0.0],["2026-11-01T13:17:38+00:00",189,17.0,85.0,22.7,0.0],["2026-11-01T13:17:55+00:00",190,17.0,85.0,22.0,0.0],["2026-11-01T13:18:13+00:00",191,17.0,85.0,21.2,0.0],["2026-11-01T13:18:30+00:00",192,17.0,85.0,20.7,0.0],["2026-11-01T13:18:48+00:00",193,17.0,85.0,19.8,0.0],["2026-11-01T13:19:05+00:00",194,17.0,85.0,18.9,0.0],["2026-11-01T13:19:23+00:00",195,17.0,85.0,18.2,0.0],["2026-11-01T13:19:40+00:00",196,17.0,85.0,17.3,0.0],["2026-11-01T13:19:58+00:00",197,17.0,85.0,16.4,0.0],["2026-11-01T13:20:16+00:00",198,17.0,85.0,15.4,0.0],["2026-11-01T13:20:33+00:00",199,17.0,85.0,85.0,0.0],["2026-11-01T13:20:51+00:00",200,17.0,85.0,84.3,0.0],["2026-11-01T13:21:08+00:00",201,17.0,85.0,83.8,0.0],["2026-11-01T13:21:26+00:00",202,17.0,85.0,82.9,0.0],["2026-11-01T13:21:43+00:00",203,17.0,85.0,81.9,0.0],["2026-11-01T13:22:01+00:00",204,17.0,85.0,81.2,0.0],["2026-11-01T13:22:18+00:00",205,17.0,85.0,80.4,0.0],["2026-11-01T13:22:36+00:00",206,45.0,85.0,79.7,0.0],["2026-11-01T13:22:53+00:00",207,45.0,85.0,79.0,0.0],["2026-11-01T13:23:10+00:00",208,45.0,85.0,78.6,0.0],["2026-11-01T13:23:28+00:00",209,45.0,85.0,77.7,0.0],["2026-11-01T13:23:45+00:00",210,45.0,85.0,76.8,0.0],["2026-11-01T13:24:03+00:00",211,45.0,85.0,75.8,0.0],["2026-11-01T13:24:20+00:00",212,45.0,85.0,74.9,0.0],["2026-11-01T13:24:38+00:00",213,45.0,85.0,74.2,0.0],["2026-11-01T13:24:55+00:00",214,-14.7,90.0,73.2,0.0],["2026-11-01T13:25:13+00:00",215,15.0,90.0,72.5,5.0],["2026-11-01T13:25:30+00:00",216,15.0,90.0,71.6,5.0],["2026-11-01T13:25:48+00:00",217,15.0,90.0,70.7,5.0],["2026-11-01T13:26:05+00:00",218,15.0,90.0,70.3,5.0],["2026-11-01T13:26:22+00:00",219,15.0,90.0,69.4,5.0],["2026-11-01T13:26:40+00:00",220,15.0,90.0,68.5,5.0],["2026-11-01T13:26:57+00:00",221,15.0,90.0,67.6,5.0],["2026-11-01T13:27:15+00:00",222,15.0,90.0,67.1,5.0],["2026-11-01T13:27:32+00:00",223,15.0,90.0,66.5,5.0],["2026-11-01T13:27:50+00:00",224,15.0,90.0,65.6,5.0],["2026-11-01T13:28:08+00:00",225,15.0,90.0,65.0,5.0],["2026-11-01T13:28:25+00:00",226,15.0,90.0,64.2,5.0],["2026-11-01T13:28:43+00:00",227,15.0,90.0,63.7,5.0],["2026-11-01T13:29:00+00:00",228,15.0,90.0,62.9,5.0],["2026-11-01T13:29:18+00:00",229,15.0,90.0,61.9,5.0],["2026-11-01T13:29:35+00:00",230,15.0,90.0,61.1,5.0],["2026-11-01T13:29:53+00:00",231,15.0,90.0,60.3,5.0],["2026-11-01T13:30:10+00:00",232,15.0,90.0,59.7,5.0],["2026-11-01T13:30:28+00:00",233,15.0,90.0,59.2,5.0],["2026-11-01T13:30:46+00:00",234,15.0,90.0,58.2,5.0],["2026-11-01T13:31:03+00:00",235,15.0,90.0,57.8,5.0],["2026-11-01T13:31:21+00:00",236,15.0,90.0,56.9,5.0],["2026-11-01T13:31:38+00:00",237,15.0,90.0,56.2,5.0],["2026-11-01T13:31:56+00:00",238,15.0,90.0,55.4,5.0],["2026-11-01T13:32:13+00:00",239,19.9,90.0,54.5,5.0],["2026-11-01T13:32:30+00:00",240,20.0,75.0,53.6,27.0],["2026-11-01T13:32:48+00:00",241,20.0,75.0,53.2,31.0],["2026-11-01T13:33:05+00:00",242,20.0,75.0,52.7,31.0],["2026-11-01T13:33:23+00:00",243,20.0,75.0,52.1,31.0],["2026-11-01T13:33:40+00:00",244,20.0,75.0,51.5,31.0],["2026-11-01T13:33:58+00:00",245,20.0,75.0,51.0,31.0],["2026-11-01T13:34:15+00:00",246,20.0,75.0,50.6,31.0],["2026-11-01T13:34:33+00:00",247,20.0,75.0,49.6,31.0],["2026-11-01T13:34:50+00:00",248,20.0,75.0,48.9,31.0],["2026-11-01T13:35:08+00:00",249,20.0,75.0,48.4,31.0],["2026-11-01T13:35:25+00:00",250,20.0,75.0,48.0,31.0],["2026-11-01T13:35:42+00:00",251,20.0,75.0,47.1,31.0],["2026-11-01T13:36:01+00:00",252,20.0,75.0,46.5,31.0],["2026-11-01T13:36:19+00:00",253,20.0,75.0,45.7,31.0],["2026-11-01T13:36:40+00:00",254,20.0,75.0,44.8,31.0],["2026-11-01T13:36:57+00:00",255,20.0,75.0,43.9,31.0],["2026-11-01T13:37:16+00:00",256,20.0,75.0,43.3,31.0],["2026-11-01T13:37:34+00:00",257,20.0,75.0,42.4,31.0],["2026-11-01T13:37:52+00:00",258,20.0,75.0,41.6,31.0],["2026-11-01T13:38:10+00:00",259,20.0,75.0,40.7,31.0],["2026-11-01T13:38:28+00:00",260,20.0,75.0,40.1,31.0],["2026-11-01T13:38:45+00:00",261,20.0,75.0,39.2,31.0],["2026-11-01T13:39:03+00:00",262,20.0,75.0,38.6,31.0],["2026-11-01T13:39:21+00:00",263,20.0,75.0,38.2,31.0],["2026-11-01T13:39:40+00:00",264,20.0,75.0,37.6,31.0],["2026-11-01T13:39:58+00:00",265,20.0,75.0,37.2,31.0],["2026-11-01T13:40:15+00:00",266,20.0,75.0,36.2,31.0],["2026-11-01T13:40:33+00:00",267,20.0,75.0,35.6,31.0],["2026-11-01T13:40:50+00:00",268,20.0,75.0,34.7,31.0],["2026-11-01T13:41:07+00:00",269,20.0,75.0,34.0,31.0],["2026-11-01T13:41:25+00:00",270,20.0,75.0,33.5,31.0],["2026-11-01T13:41:42+00:00",271,20.0,75.0,33.0,31.0],["2026-11-01T13:42:00+00:00",272,20.0,75.0,32.3,31.0],["2026-11-01T13:42:17+00:00",273,20.0,75.0,31.8,31.0],["2026-11-01T13:42:35+00:00",274,20.0,75.0,31.1,31.0]];
 
@@ -726,7 +821,7 @@ function spark(values, color) {
   if (values.length < 2) return "";
   const w = 120, h = 42, mn = Math.min(...values), mx = Math.max(...values), sp = mx - mn || 1;
   const p = values.map((v, i) => `${(i / (values.length - 1) * (w - 4) + 2).toFixed(1)},${(h - 4 - (v - mn) / sp * (h - 8)).toFixed(1)}`).join(" ");
-  return `<svg class="spark" viewBox="0 0 ${w} ${h}"><polyline points="${p}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${p}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`;
 }
 
 /* ===== Rendering ===== */
@@ -748,11 +843,13 @@ function render() {
     if (k === "temp" && last.anomaly) flag = ` <span class="flag crit">${svgIcon("warn")}Anomaly</span>`;
     if (k === "soil" && last.soil < THRESHOLD) flag = ` <span class="flag crit">${svgIcon("drop")}Dry</span>`;
     const el = $(`k-${k}`), before = state.prevVals[k];
-    el.innerHTML = `<div class="ic" style="background:${S.color}26">${svgIcon(k, S.color)}</div>
-      <div class="name">${S.name}${flag}</div>
+    el.style.setProperty("--tag", S.color);
+    el.innerHTML = `<span class="hole"></span>
+      <div class="name">${svgIcon(k, S.color)}${S.name}${flag}</div>
       <div class="val"><span class="num">${fmt(before === undefined ? last[k] : before, S.dec)}</span><small>${S.unit}</small></div>
-      <div class="sub">${S.sub}</div>
-      <div class="meta"><span class="delta">${d === null ? "&nbsp;" : Math.abs(d) < 0.05 ? "no change in 10 readings" : (d > 0 ? "▲ +" : "▼ ") + fmt(d, S.dec) + " " + S.unit + " in 10 readings"}</span>${spark(vals, S.color)}</div>`;
+      ${spark(vals, S.color)}
+      <div class="delta">${d === null ? "&nbsp;" : Math.abs(d) < 0.05 ? "steady over 10 readings" : (d > 0 ? "▲ +" : "▼ ") + fmt(d, S.dec) + " " + S.unit + " in 10 readings"}</div>
+      <div class="sub">${S.sub}</div>`;
     el.setAttribute("aria-label", `${S.name} ${fmt(last[k], S.dec)} ${S.unit}. Show its chart.`);
     if (before !== undefined && Math.abs(before - last[k]) > 1e-9) {
       countUp(el.querySelector(".num"), before, last[k], S.dec);
@@ -949,7 +1046,7 @@ function renderScene(r, fc) {
   </svg>`;
 }
 function renderEmpty() {
-  Object.keys(SERIES).forEach(k => { $(`k-${k}`).innerHTML = `<div class="ic" style="background:${SERIES[k].color}26">${svgIcon(k, SERIES[k].color)}</div><div class="name">${SERIES[k].name}</div><div class="val">–</div><div class="sub">Waiting for the next reading</div>`; });
+  Object.keys(SERIES).forEach(k => { const el = $(`k-${k}`); el.style.setProperty("--tag", SERIES[k].color); el.innerHTML = `<span class="hole"></span><div class="name">${svgIcon(k, SERIES[k].color)}${SERIES[k].name}</div><div class="val">–</div><div class="sub">Waiting for the next reading</div>`; });
   $("headline").textContent = "Waiting for data…"; $("heroFlag").innerHTML = ""; $("facts").innerHTML = "";
   ["c-soil", "c-temp", "c-hum", "c-light"].forEach(id => { $(id).innerHTML = ""; });
 }
@@ -1086,7 +1183,7 @@ $("tabLive").onclick = enterLive;
 
 document.querySelectorAll(".srow").forEach(b => b.addEventListener("click", () => {
   const card = $(b.dataset.chart).closest(".card");
-  card.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
+  scrollToEl(card, true);
   card.classList.add("focus"); setTimeout(() => card.classList.remove("focus"), 1600);
 }));
 $("rangebar").addEventListener("click", e => {
@@ -1240,14 +1337,14 @@ function renderApi() {
     <div class="chart" style="height:230px;margin-top:14px">${svg}</div>
     <div class="legend" style="margin-top:6px"><span><i class="sw" style="border-color:#6E56CF"></i>Weather-aware model, hour by hour</span><span><i class="sw dash" style="border-color:var(--text-2)"></i>Time-only model (0.78 %/h): ${S0 > THRESHOLD ? (fixedH < 48 ? fixedH.toFixed(0) + " h" : (fixedH / 24).toFixed(1) + " days") : "now"}</span><span><i class="sw pt" style="background:rgba(57,135,229,0.35);border-radius:2px"></i>Night</span></div>
     <div class="wxnote">Outdoor forecast from Open-Meteo, with the greenhouse assumed ${warm} °C warmer than outside. Sunlight: 1000 W/m² of solar radiation counts as 100 % light. The soil dries fast in the sunny afternoons and almost stops at night; the time-only model cannot see this.</div>`;
-  $("useNow").onclick = () => { $("sT").value = Math.max(0, Math.min(45, curT)); $("sH").value = Math.round(Math.max(10, Math.min(100, c.hum))); $("sL").value = Math.round(curLight); renderSim(); window.scrollTo({ top: $("wxPage").offsetTop, behavior: "smooth" }); };
+  $("useNow").onclick = () => { $("sT").value = Math.max(0, Math.min(45, curT)); $("sH").value = Math.round(Math.max(10, Math.min(100, c.hum))); $("sL").value = Math.round(curLight); renderSim(); scrollToEl($("wxPage")); };
 }
 $("wxFetch").onclick = fetchWeather;
 $("city").onchange = () => apiData && fetchWeather();
 $("warm").onchange = renderApi;
 $("sS").addEventListener("input", renderApi);
 $("tabWx").onclick = enterWeather;
-$("goLive").onclick = () => { enterLive(); window.scrollTo({ top: 0, behavior: "smooth" }); };
+$("goLive").onclick = () => { enterLive(); scrollToEl(0); };
 ["sT", "sH", "sL", "sS"].forEach(id => $(id).addEventListener("input", renderSim));
 $("presets").innerHTML = PRESETS.map((p, i) => `<button class="chip" data-i="${i}">${p[0]}</button>`).join("");
 $("presets").addEventListener("click", e => { const b = e.target.closest(".chip"); if (!b) return;

@@ -1,4 +1,4 @@
-# Greenhouse AIoT Dashboard
+# Serre: greenhouse AIoT dashboard
 
 Monitoring dashboard for our AIoT greenhouse prototype: a simulated ESP32 (Wokwi) sends temperature, humidity, soil moisture and light readings to ThingSpeak, and the dashboard adds an AI watering forecast and temperature anomaly detection.
 
